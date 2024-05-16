@@ -169,4 +169,10 @@
     opacity: 1; /* Mostrar la ventana modal */
     pointer-events: auto; /* Permitir el clic en el fondo */
   }
+
+.logo-lindo{
+  display: flex;
+  margin: 0 auto;
+  width: 30%;
+}
   

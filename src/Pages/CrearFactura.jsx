@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PaginaCrearFactura from '../Components/PaginaLogin/PaginaCrearFactura/PaginaCrearFactura';
-
+import './CSS/CrearFactura.css'
 const CrearFactura = () => {
     const [productos, setProductos] = useState([{ nombre: '', cantidad: 0, precio: 0, total: 0 }]);
     const [subtotal, setSubtotal] = useState(0);
@@ -55,9 +55,9 @@ const CrearFactura = () => {
     };
 
     return (
-        <div>
+        <div className='container'>
             <PaginaCrearFactura />
-            <div>
+            <div className="form-container">
                 <h2>Orden de Compra</h2>
                 <form onSubmit={handleSubmit}>
                     <table>

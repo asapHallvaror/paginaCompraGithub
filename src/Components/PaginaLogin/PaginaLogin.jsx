@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './PaginaLogin.css';
+import logo from '../Assets/YZY MUSIC.png'
 
 const PaginaLogin = () => {
   const [modalAbierto, setModalAbierto] = useState(false); // Estado para controlar si la ventana modal está abierta
@@ -15,6 +17,7 @@ const PaginaLogin = () => {
   return (
     <div className="login-container">
       <div className="login-form">
+        <img src={logo} alt="" className='logo-lindo'/>
         <h2>Iniciar sesión</h2>
         <form>
           <div className="form-group">
@@ -25,7 +28,9 @@ const PaginaLogin = () => {
             <label htmlFor="password">Contraseña:</label>
             <input type="password" id="password" name="password" placeholder="Contraseña" required className='login-inputs-bonitos'/>
           </div>
-          <button type="submit" className='boton-inferior'><span>Iniciar sesión</span></button>
+          <Link to={'/factura'}>
+            <button type="submit" className='boton-inferior'><span>Iniciar sesión</span></button>
+          </Link>
           <p className='olvidaste-p' onClick={abrirModal}>¿Olvidaste tu contraseña?</p> {/* Agregar onClick para abrir la ventana modal */}
         </form>
       </div>
