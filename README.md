@@ -1,5 +1,5 @@
 <h1 align="center">Proyecto colaborativo venta de discos</h1>
-![yzymusiclogo](https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/8a23335e-722d-4de1-9feb-afaed9eb1faf)
+<img src="https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/ff69859c-7cf7-4c4e-819d-06ff1eca742e">
 <p align="center">Hecho por: Álvaro Morales y Vicente Zapata</p>
 <div align="center">
   <h1>Instalación</h1>
