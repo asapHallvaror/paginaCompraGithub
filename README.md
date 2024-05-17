@@ -4,6 +4,12 @@
 </h1>
 <p align="center">Hecho por: Álvaro Morales y Vicente Zapata</p>
 <div align="center">
+    
+  <h1>Propósito</h1>
+  <p>El propósito de este proyecto es desarrollar una página la cual pueda realizar el ingreso de ordenes de compra con todos sus detalles que son los siguientes:</p>
+  <p>- Nombre del producto</p>
+  <p>- Cantidad del producto</p>
+  <p>- Precio del producto</p>
   <h1>Instalación</h1>
   <h1>Contexto</h1>
   <h1></h1>
