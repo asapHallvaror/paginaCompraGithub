@@ -10,6 +10,10 @@
   <p>- Nombre del producto</p>
   <p>- Cantidad del producto</p>
   <p>- Precio del producto</p>
+  <p><strong>Además debe tener un botón el cual agregue más productos</strong> (en caso de que la empresa cliente requiera)</p>
+  <h2>La factura final debería asemejarse a la siguiente:</h2>
+  <img src="https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/133c866a-8237-419c-9e6d-bbd1ae941176" />
+  
   <h1>Instalación</h1>
   <h1>Contexto</h1>
   <h1></h1>
