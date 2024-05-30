@@ -39,7 +39,7 @@ tbody input[type="number"] {
 }
 
 /* Estilos para los botones */
-button {
+.botones-form {
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
@@ -49,17 +49,17 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.botones-form:hover {
     background-color: #45a049;
 }
 
 /* Estilos para los botones de eliminación */
-button[type="button"] {
+.botones-form[type="button"] {
     background-color: #f44336;
     margin-top: 0;
 }
 
-button[type="button"]:hover {
+.botones-form[type="button"]:hover {
     background-color: #e53935;
 }
 
@@ -82,4 +82,24 @@ h2 {
 .total-container {
     text-align: right;
     margin-top: 20px;
+}
+
+.btn-logout{
+    border-radius: 100px;
+    border: none;
+    display: flex;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: 0.5s;
+    
+}
+
+.btn-logout:hover{
+    transition: 0.5s;
+    background-color: #f77f7f;
+}
+
+
+.sign{
+    width: 16px;
 }

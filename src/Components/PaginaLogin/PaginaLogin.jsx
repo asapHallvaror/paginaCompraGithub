@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PaginaLogin.css';
 import { useAuth } from '../../auth/AuthContext'; 
-import logo from '../Assets/YZY MUSIC.png'
+import logo from '../Assets/YZY MUSIC.png';
 
 const Login = () => {
   const [rutEmpresa, setRutEmpresa] = useState('');
@@ -19,6 +19,8 @@ const Login = () => {
     const user = await auth.signin(rutEmpresa, password);
 
     if (user) {
+      // Guardar el estado de inicio de sesión en localStorage
+      localStorage.setItem('isLoggedIn', 'true');
       navigate('/factura');
     } else {
       alert('Invalid credentials');

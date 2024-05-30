@@ -7,6 +7,7 @@ import './PaginaCrearFactura.css';
 import companyData from '../../../CompanyData.js';
 import autoTable from 'jspdf-autotable';
 import { toDataURL } from 'qrcode';
+import { useAuth } from '../../../auth/AuthContext.js';
 
 
 const PaginaCrearFactura = () => {
@@ -14,6 +15,15 @@ const PaginaCrearFactura = () => {
     const [subtotal, setSubtotal] = useState(0);
     const [iva, setIVA] = useState(0);
     const [totalGeneral, setTotalGeneral] = useState(0);
+
+    const auth = useAuth();
+
+    const handleLogout = () => {
+        auth.signout(() => {
+          // Redirige al usuario después de cerrar sesión
+          window.location.href = '/'; // Por ejemplo, redirige a la página de inicio
+        });
+      };
 
     const agregarProducto = () => {
         setProductos([...productos, { nombre: '', cantidad: 0, precio: 0, total: 0 }]);
@@ -23,6 +33,15 @@ const PaginaCrearFactura = () => {
         const newProductos = productos.filter((_, i) => i !== index);
         setProductos(newProductos);
     };
+
+    useEffect(() => {
+        // Verificar si el usuario está autenticado al cargar la página
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn) {
+            // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
+            handleLogout();
+        }
+    }, []);
 
     const handleInputChange = (index, event) => {
         const { name, value } = event.target;
@@ -121,9 +140,16 @@ const generarPDF = async () => {
 
     // Guardar el PDF
     doc.save('factura.pdf');
+
+    
 };
     return (
         <div>
+            <button onClick={handleLogout} class="btn-logout">
+  
+                <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
+
+            </button>
             <h2>Orden de Compra</h2>
             <form onSubmit={handleSubmit}>
                 <table>
@@ -143,12 +169,12 @@ const generarPDF = async () => {
                                 <td><input type="number" name="cantidad" value={producto.cantidad} onChange={e => handleInputChange(index, e)} min="1" required /></td>
                                 <td><input type="number" name="precio" value={producto.precio} onChange={e => handleInputChange(index, e)} min="0.01" step="0.01" required /></td>
                                 <td><input type="text" value={producto.total} readOnly /></td>
-                                <td><button type="button" className="delete-button" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
+                                <td><button type="button" className="botones-form" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <button type="button" className="add-button" onClick={agregarProducto}>Agregar Producto</button>
+                <button type="button" className="botones-form" onClick={agregarProducto}>Agregar Producto</button>
                 <div className="total-container">
                     <br /><br />
                     <label>Subtotal:</label>
@@ -160,7 +186,7 @@ const generarPDF = async () => {
                     <label>Total General (IVA incluido):</label>
                     <p>{Math.round(totalGeneral)}</p>
                     <br /><br />
-                    <button type="submit" className="submit-button">Generar Factura</button>
+                    <button type="submit" className="botones-form">Generar Factura</button>
                 </div>
             </form>
         </div>
