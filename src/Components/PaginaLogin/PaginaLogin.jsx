@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { Link, useNavigate } from 'react-router-dom';
 import './PaginaLogin.css';
+import logo from '../Assets/YZY MUSIC.png'
 
 
 const Login = () => {
@@ -26,6 +28,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-form">
+        <img src={logo} alt="" className='logo-lindo'/>
         <h2>Iniciar sesión</h2>
         <form onSubmit={handleLogin}>
           <div className="form-group">
@@ -36,7 +39,9 @@ const Login = () => {
             <label htmlFor="password">Contraseña:</label>
             <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" required className='login-inputs-bonitos'/>
           </div>
-          <button type="submit" className='boton-inferior'><span>Iniciar sesión</span></button>
+          <Link to={'/factura'}>
+            <button type="submit" className='boton-inferior'><span>Iniciar sesión</span></button>
+          </Link>
           <p className='olvidaste-p' onClick={abrirModal}>¿Olvidaste tu contraseña?</p> {/* Agregar onClick para abrir la ventana modal */}
         </form>
       </div>

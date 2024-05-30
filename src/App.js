@@ -9,7 +9,8 @@ function App() {
       <BrowserRouter>
         <Routes>
         <Route path='/' element={<Login/>}/>
-        <Route path='/CrearFactura' element={<CrearFactura/>}/>
+        <Route path='/factura' element={<CrearFactura/>}/>
+
         </Routes>
       </BrowserRouter>
     </div>
