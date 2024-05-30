@@ -1,20 +1,38 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, useRoutes, Navigate } from 'react-router-dom';
+import { ProvideAuth, useAuth } from './auth/AuthContext';
 import Login from './Pages/Login';
 import CrearFactura from './Pages/CrearFactura';
 
 function App() {
+  const auth = useAuth();
+
+  let routes = useRoutes([
+    {
+      path: '/',
+      element: <Login />,
+    },
+    {
+      path: '/factura',
+      element: auth.user ? <CrearFactura /> : <Navigate to="/" />,
+    },
+  ]);
+
   return (
     <div>
-      <BrowserRouter>
-        <Routes>
-        <Route path='/' element={<Login/>}/>
-        <Route path='/factura' element={<CrearFactura/>}/>
-
-        </Routes>
-      </BrowserRouter>
+      {routes}
     </div>
   );
 }
 
-export default App;
+function AppWrapper() {
+  return (
+    <BrowserRouter>
+      <ProvideAuth>
+        <App />
+      </ProvideAuth>
+    </BrowserRouter>
+  );
+}
+
+export default AppWrapper;
