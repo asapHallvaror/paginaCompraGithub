@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
 import PaginaCrearFactura from '../Components/PaginaLogin/PaginaCrearFactura/PaginaCrearFactura';
 import './CSS/CrearFactura.css'
 const CrearFactura = () => {
@@ -98,4 +98,5 @@ const CrearFactura = () => {
     );
 }
 
-export default CrearFactura;
+export default CrearFactura
+
