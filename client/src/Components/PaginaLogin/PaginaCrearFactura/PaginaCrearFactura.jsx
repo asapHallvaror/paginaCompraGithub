@@ -154,6 +154,18 @@ const generarPDF = async () => {
             <form onSubmit={handleSubmit}>
                 <table>
                     <thead>
+                    <th>Número de orden</th>
+                    <th>Fecha orden</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="number" name='nroOrden' required/></td>
+                            <td><input className='fecha-input' type="date" name='fecha' required/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
                         <tr>
                             <th>Nombre del Producto</th>
                             <th>Cantidad</th>
@@ -165,7 +177,7 @@ const generarPDF = async () => {
                     <tbody>
                         {productos.map((producto, index) => (
                             <tr key={index}>
-                                <td><input type="text" name="nombre" value={producto.nombre} onChange={e => handleInputChange(index, e)} required /></td>
+                                <td><input type="text" name="nombre" value={producto.nombre} onChange={e => {if (e.target.value === '' || !e.target.value.match(/^ *$/)) {handleInputChange(index, e);}}} required minLength="4" maxLength="45" /></td>
                                 <td><input type="number" name="cantidad" value={producto.cantidad} onChange={e => handleInputChange(index, e)} min="1" required /></td>
                                 <td><input type="number" name="precio" value={producto.precio} onChange={e => handleInputChange(index, e)} min="0.01" step="0.01" required /></td>
                                 <td><input type="text" value={producto.total} readOnly /></td>

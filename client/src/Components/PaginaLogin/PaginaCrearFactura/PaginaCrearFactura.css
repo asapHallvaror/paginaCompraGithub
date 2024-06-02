@@ -103,3 +103,26 @@ h2 {
 .sign{
     width: 16px;
 }
+
+.fecha-input{
+    font-family: 'Arial', sans-serif; /* Cambia la fuente si prefieres otra */
+    font-size: 16px;
+    padding: 10px;
+    border: 2px solid #ccc; /* Color del borde */
+    border-radius: 5px; /* Esquinas redondeadas */
+    background-color: #f9f9f9; /* Fondo del input */
+    color: #333; /* Color del texto */
+    outline: none; /* Quita el contorno azul en algunos navegadores */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.fecha-input:hover{
+    border-color: #888; /* Cambia el color del borde */
+    background-color: #f1f1f1; /* Cambia el fondo */
+}
+
+.fecha-input:focus{
+    border-color: #0056b3; /* Color del borde cuando se enfoca */
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Sombra alrededor del input */
+    background-color: #fff; /* Fondo blanco al hacer focus */
+}
