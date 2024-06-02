@@ -150,7 +150,7 @@ const generarPDF = async () => {
                 <div class="sign"><svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path></svg></div>
 
             </button>
-            <h2>Orden de Compra</h2>
+            <h2 style={{textAlign: 'center', marginTop: '50px'}}>Orden de Compra</h2>
             <form onSubmit={handleSubmit}>
                 <table>
                     <thead>
@@ -159,11 +159,54 @@ const generarPDF = async () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="number" name='nroOrden' required/></td>
+                            <td><input type="number" name='nroOrden' placeholder='Ingresa número de orden' required/></td>
                             <td><input className='fecha-input' type="date" name='fecha' required/></td>
                         </tr>
                     </tbody>
                 </table>
+                <h3 style={{textAlign: 'center', marginTop: '30px'}}>Datos empresa proovedora</h3>
+                <table>
+                    <thead>
+                        <th>Rut empresa*</th>
+                        <th>Razón social*</th>
+                        <th>Direccion*</th>
+                        <th>Teléfono*</th>
+                        <th>Correo*</th>
+                        <th>Sitio web</th>
+                        <th>Tipo servicio</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name='rutEmpProv' placeholder='Ingresa rut empresa' required minLength="10" maxLength="10"/></td>
+                            <td><input type="text" name='nomEmpProv' placeholder='Ingresa nombre empresa' required minLength="10" maxLength="10"/></td>
+                            <td><input type="text" name='dirEmpProv' placeholder='Ingresa direccion empresa' required minLength="10" maxLength="10"/></td>
+                            <td><input type="number" name='telEmpProv' placeholder='Ingresa teléfono' required/></td>
+                            <td><input type="email" name='mailEmpProv' placeholder='Ingresa correo' required/></td>
+                            <td><input type="text" name='webEmpProv' placeholder='Ingresa página web'/></td>
+                            <td><input type="text" name='servEmpProv' placeholder='Ingresa tipo de servicio'/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 style={{textAlign: 'center', marginTop: '30px'}}>Datos empresa cliente</h3>
+                <table>
+                    <thead>
+                        <th>Rut*</th>
+                        <th>Nombre o razón social*</th>
+                        <th>Direccion*</th>
+                        <th>Teléfono*</th>
+                        <th>Correo*</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name='rutEmpCliente' placeholder='Ingresa rut' required minLength="10" maxLength="10"/></td>
+                            <td><input type="text" name='nomEmpCliente' placeholder='Ingresa nombre' required minLength="10" maxLength="10"/></td>
+                            <td><input type="text" name='dirEmpCliente' placeholder='Ingresa direccion' required minLength="10" maxLength="10"/></td>
+                            <td><input type="number" name='telEmpCliente' placeholder='Ingresa teléfono' required/></td>
+                            <td><input type="email" name='mailEmpCliente' placeholder='Ingresa correo' required/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 style={{textAlign: 'center', marginTop: '30px'}}>Datos productos</h3>
                 <table>
                     <thead>
                         <tr>
@@ -177,16 +220,16 @@ const generarPDF = async () => {
                     <tbody>
                         {productos.map((producto, index) => (
                             <tr key={index}>
-                                <td><input type="text" name="nombre" value={producto.nombre} onChange={e => {if (e.target.value === '' || !e.target.value.match(/^ *$/)) {handleInputChange(index, e);}}} required minLength="4" maxLength="45" /></td>
-                                <td><input type="number" name="cantidad" value={producto.cantidad} onChange={e => handleInputChange(index, e)} min="1" required /></td>
-                                <td><input type="number" name="precio" value={producto.precio} onChange={e => handleInputChange(index, e)} min="0.01" step="0.01" required /></td>
+                                <td><input type="text" name="nombre" value={producto.nombre} onChange={e => {if (e.target.value === '' || !e.target.value.match(/^ *$/)) {handleInputChange(index, e);}}}  placeholder='Ingresa nombre de producto' required minLength="4" maxLength="45" /></td>
+                                <td><input type="number" placeholder='Ingresa cantidad del producto' name="cantidad" value={producto.cantidad} onChange={e => handleInputChange(index, e)} min="1" required /></td>
+                                <td><input type="number" name="precio" placeholder='Ingresa precio' value={producto.precio} onChange={e => handleInputChange(index, e)} min="0.01" step="0.01" required /></td>
                                 <td><input type="text" value={producto.total} readOnly /></td>
                                 <td><button type="button" className="botones-form" onClick={() => eliminarProducto(index)}>Eliminar</button></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <button type="button" className="botones-form" onClick={agregarProducto}>Agregar Producto</button>
+                <button type="button" className="boton-agregar" onClick={agregarProducto}>Agregar Producto</button>
                 <div className="total-container">
                     <br /><br />
                     <label>Subtotal:</label>
