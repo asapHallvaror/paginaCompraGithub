@@ -8,6 +8,7 @@ import companyData from '../../../CompanyData.js';
 import autoTable from 'jspdf-autotable';
 import { toDataURL } from 'qrcode';
 import { useAuth } from '../../../auth/AuthContext.js';
+import Swal from 'sweetalert2';
 
 
 const PaginaCrearFactura = () => {
@@ -30,10 +31,17 @@ const PaginaCrearFactura = () => {
     };
 
     const eliminarProducto = (index) => {
-        const newProductos = productos.filter((_, i) => i !== index);
-        setProductos(newProductos);
+        if (productos.length > 1) {
+            const newProductos = productos.filter((_, i) => i !== index);
+            setProductos(newProductos);
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Debe haber al menos un producto!",
+              });
+        }
     };
-
     useEffect(() => {
         // Verificar si el usuario está autenticado al cargar la página
         const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -54,6 +62,8 @@ const PaginaCrearFactura = () => {
         }
         setProductos(newProductos);
     };
+
+    
 
     useEffect(() => {
         calcularSubtotal();

@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProvideAuth } from './auth/AuthContext';
 import Login from './Pages/Login';
 import CrearFactura from './Pages/CrearFactura';
+import PaginaHome from './Pages/PaginaHome';
 import PrivateRoute from './PrivateRoute';
+import Error404 from './Pages/Error404';
 
 function App() {
   return (
@@ -12,6 +14,13 @@ function App() {
       <Route path="/factura" element={<PrivateRoute />}>
         <Route path="/factura" element={<CrearFactura />} />
       </Route>
+      <Route path="/home" element={<PrivateRoute />}>
+        <Route path="/home" element={<PaginaHome />} />
+      </Route>
+      <Route path="*" element={<PrivateRoute />}>
+        <Route path="*" element={<Error404 />} />
+      </Route>
+
     </Routes>
   );
 }

@@ -21,7 +21,7 @@ const Login = () => {
     if (user) {
       // Guardar el estado de inicio de sesión en localStorage
       localStorage.setItem('isLoggedIn', 'true');
-      navigate('/factura');
+      navigate('/home');
     } else {
       alert('Invalid credentials');
     }
