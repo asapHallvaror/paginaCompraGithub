@@ -11,16 +11,9 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/factura" element={<PrivateRoute />}>
-        <Route path="/factura" element={<CrearFactura />} />
-      </Route>
-      <Route path="/home" element={<PrivateRoute />}>
-        <Route path="/home" element={<PaginaHome />} />
-      </Route>
-      <Route path="*" element={<PrivateRoute />}>
-        <Route path="*" element={<Error404 />} />
-      </Route>
-
+      <Route path="/factura" element={<CrearFactura />} />
+      <Route path="/home" element={<PaginaHome />} />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 }

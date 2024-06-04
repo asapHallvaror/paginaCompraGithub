@@ -1,8 +1,11 @@
-import React from 'react'
-import './HomePage.css'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import './HomePage.css';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
+  
+    const userData = JSON.parse(localStorage.getItem('user'));
+
   const fecha = new Date().toLocaleDateString('es-ES', {
     weekday: 'long',
     year: 'numeric',
@@ -20,7 +23,7 @@ const HomePage = () => {
     <div>
         <div className="home-container">
             <div className="header-home">
-                <h1>Bienvenid@ Lorem Ipsum</h1>
+                <h1>Bienvenid@ {userData.RAZON_SOCIAL}</h1>
                 <p>{fechaCapitalized}</p>
             </div>
             <div className="middle-container">
@@ -34,9 +37,11 @@ const HomePage = () => {
                 <h2>Tus facturas</h2>
                 <table>
                     <thead>
-                        <th>Número orden</th>
-                        <th>Fecha orden</th>
-                        <th>Ver detalle factura</th>
+                        <tr>
+                            <th>Número orden</th>
+                            <th>Fecha orden</th>
+                            <th>Ver detalle factura</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -47,7 +52,7 @@ const HomePage = () => {
                                 01/06/2024
                             </td>
                             <td>
-                                <button style={{marginLeft: '30px'}}>Ver detalle</button>
+                                <button style={{ marginLeft: '30px' }}>Ver detalle</button>
                             </td>
                         </tr>
                     </tbody>
@@ -55,7 +60,7 @@ const HomePage = () => {
             </div>
         </div>
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

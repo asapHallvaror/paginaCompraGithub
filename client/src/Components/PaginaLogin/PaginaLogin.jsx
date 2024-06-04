@@ -16,10 +16,21 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const user = await auth.signin(rutEmpresa, password);
 
-    if (user) {
-      // Guardar el estado de inicio de sesión en localStorage
+    const response = await fetch('http://localhost:3001/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rutEmpresa, password }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const user = result.user;
+      // Guardar todos los datos del usuario en localStorage
+      localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('isLoggedIn', 'true');
       navigate('/home');
     } else {
