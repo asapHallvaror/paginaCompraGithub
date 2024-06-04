@@ -51,6 +51,39 @@ app.post('/api/login', (req, res) => {
 });
 
 
+// Ruta para insertar una nueva factura
+app.post('/api/facturas', (req, res) => {
+    const facturaData = req.body;
+    const query = 'INSERT INTO facturas SET ?';
+
+    db.query(query, facturaData, (err, result) => {
+        if (err) {
+            console.error('Error al insertar la factura:', err.message);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+        console.log('Factura insertada correctamente');
+        res.send({ success: true, numero_orden: result.insertId });
+    });
+});
+
+// Ruta para insertar un detalle de factura
+app.post('/api/detalles_facturas', (req, res) => {
+    const detalleFacturaData = req.body;
+    const query = 'INSERT INTO detalles_facturas SET ?';
+
+    db.query(query, detalleFacturaData, (err, result) => {
+        if (err) {
+            console.error('Error al insertar el detalle de la factura:', err.message);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+        console.log('Detalle de factura insertado correctamente');
+        res.send({ success: true, id: result.insertId });
+    });
+});
+
+
 app.listen(3001, () => {
     console.log('Corriendo en el puerto 3001');
 });

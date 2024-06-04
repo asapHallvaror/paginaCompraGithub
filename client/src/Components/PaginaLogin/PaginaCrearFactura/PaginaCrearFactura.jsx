@@ -8,6 +8,7 @@ import companyData from '../../../CompanyData.js';
 import autoTable from 'jspdf-autotable';
 import { toDataURL } from 'qrcode';
 import { useAuth } from '../../../auth/AuthContext.js';
+import axios from 'axios';
 import Swal from 'sweetalert2';
 
 
@@ -119,22 +120,77 @@ const PaginaCrearFactura = () => {
         setTotalGeneral(total);
     };
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        const user = JSON.parse(localStorage.getItem('user'));
-        
-        if (user) {
-            const { RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO } = user;
-            generarPDF(
-                numFactura,
-                RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
-                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente
-            );
-        } else {
-            console.log('No user data found in localStorage');
+    const enviarFactura = async (facturaData) => {
+        try {
+            const response = await axios.post('http://localhost:3001/api/facturas', facturaData);
+            console.log('Factura enviada correctamente');
+            return response.data.numero_orden;
+        } catch (error) {
+            console.error('Error al enviar la factura:', error.message);
         }
     };
     
+    const enviarDetallesFactura = async (numero_orden) => {
+        for (let producto of productos) {
+            const detalleFacturaData = {
+                numero_orden,
+                nombre_producto: producto.nombre,
+                cantidad: producto.cantidad,
+                precio: producto.precio,
+                total: producto.total
+            };
+    
+            try {
+                await axios.post('http://localhost:3001/api/detalles_facturas', detalleFacturaData);
+            } catch (error) {
+                console.error('Error al enviar el detalle de la factura:', error.message);
+                return;
+            }
+        }
+    
+        console.log('Detalles de factura enviados correctamente');
+    };
+    
+
+    const handleSubmit = async event => {
+    event.preventDefault();
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    if (user) {
+        const { RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO } = user;
+        generarPDF(
+            numFactura,
+            RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
+            nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente
+        );
+
+        // Enviar los datos de la factura al servidor
+        const fechaOrden = new Date();
+        const fechaOrdenFormatoMySQL = `${fechaOrden.getFullYear()}-${fechaOrden.getMonth()+1}-${fechaOrden.getDate()} ${fechaOrden.getHours()}:${fechaOrden.getMinutes()}:${fechaOrden.getSeconds()}`;
+
+        const facturaData = {
+            numero_orden: numFactura,
+            fecha_orden: fechaOrdenFormatoMySQL,
+            rut_proveedor: RUT,
+            razon_social_proveedor: RAZON_SOCIAL,
+            direccion_proveedor: DIRECCION,
+            telefono_proveedor: TELEFONO,
+            correo_proveedor: CORREO,
+            rut_cliente: rutCliente,
+            nombre_cliente: nombreCliente,
+            direccion_cliente: direccionCliente,
+            telefono_cliente: telefonoCliente,
+            correo_cliente: correoCliente
+        };
+
+        const numero_orden = await enviarFactura(facturaData);
+        if (numero_orden) {
+            await enviarDetallesFactura(numero_orden);
+        }
+    } else {
+        console.log('No user data found in localStorage');
+    }
+};
 
 const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEmpresa, telefonoEmpresa, correoEmpresa,
     nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente) => {
