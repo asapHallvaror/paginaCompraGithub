@@ -146,3 +146,35 @@ h2 {
     box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Sombra alrededor del input */
     background-color: #fff; /* Fondo blanco al hacer focus */
 }
+
+.btn-volver{
+    display: flex;
+    height: 3em;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: #eeeeee4b;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: all 0.2s linear;
+    cursor: pointer;
+    border: none;
+    background: #fff;
+}
+
+.btn-volver > svg{
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 20px;
+    transition: all 0.4s ease-in;
+}
+
+.btn-volver > svg:hover{
+    font-size: 1.2em;
+    transform: translateX(-5px);
+}
+
+.btn-volver:hover{
+    box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+    transform: translateY(-2px);
+}

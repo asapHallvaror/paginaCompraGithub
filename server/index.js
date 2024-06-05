@@ -40,6 +40,15 @@ app.get("/facturas", (req, res) => {
             res.send(result);
         }
     });
+});app.get("/facturas", (req, res) => {
+    const rut_proveedor = req.query.rut_proveedor;
+    db.query('SELECT * FROM facturas WHERE rut_proveedor = ?', [rut_proveedor], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
 });
 
 

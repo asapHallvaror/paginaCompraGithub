@@ -8,7 +8,8 @@ import companyData from '../../../CompanyData.js';
 import autoTable from 'jspdf-autotable';
 import { toDataURL } from 'qrcode';
 import { useAuth } from '../../../auth/AuthContext.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -154,50 +155,52 @@ const PaginaCrearFactura = () => {
     
 
     const handleSubmit = async event => {
-    event.preventDefault();
-    const user = JSON.parse(localStorage.getItem('user'));
+        event.preventDefault();
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (user) {
+            const { RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO, SITIO_WEB, TIPO_SERVICIO } = user;
+            generarPDF(
+                numFactura,
+                RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
+                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente
+            );
     
-    if (user) {
-        const { RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO } = user;
-        generarPDF(
-            numFactura,
-            RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
-            nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente
-        );
-
-        // Enviar los datos de la factura al servidor
-        const fechaOrden = new Date();
-        const fechaOrdenFormatoMySQL = `${fechaOrden.getFullYear()}-${fechaOrden.getMonth()+1}-${fechaOrden.getDate()} ${fechaOrden.getHours()}:${fechaOrden.getMinutes()}:${fechaOrden.getSeconds()}`;
-
-        const facturaData = {
-            numero_orden: numFactura,
-            fecha_orden: fechaOrdenFormatoMySQL,
-            rut_proveedor: RUT,
-            razon_social_proveedor: RAZON_SOCIAL,
-            direccion_proveedor: DIRECCION,
-            telefono_proveedor: TELEFONO,
-            correo_proveedor: CORREO,
-            rut_cliente: rutCliente,
-            nombre_cliente: nombreCliente,
-            direccion_cliente: direccionCliente,
-            telefono_cliente: telefonoCliente,
-            correo_cliente: correoCliente
-        };
-
-        const numero_orden = await enviarFactura(facturaData);
-        if (numero_orden) {
-            await enviarDetallesFactura(numero_orden);
+            // Enviar los datos de la factura al servidor
+            const fechaOrden = new Date();
+            const fechaOrdenFormatoMySQL = `${fechaOrden.getFullYear()}-${fechaOrden.getMonth()+1}-${fechaOrden.getDate()} ${fechaOrden.getHours()}:${fechaOrden.getMinutes()}:${fechaOrden.getSeconds()}`;
+    
+            const facturaData = {
+                numero_orden: numFactura,
+                fecha_orden: fechaOrdenFormatoMySQL,
+                rut_proveedor: RUT,
+                razon_social_proveedor: RAZON_SOCIAL,
+                direccion_proveedor: DIRECCION,
+                telefono_proveedor: TELEFONO,
+                correo_proveedor: CORREO,
+                sitio_web_proveedor: SITIO_WEB,
+                tipo_servicio: TIPO_SERVICIO,
+                rut_cliente: rutCliente,
+                nombre_cliente: nombreCliente,
+                direccion_cliente: direccionCliente,
+                telefono_cliente: telefonoCliente,
+                correo_cliente: correoCliente
+            };
+    
+            const numero_orden = await enviarFactura(facturaData);
+            if (numero_orden) {
+                await enviarDetallesFactura(numero_orden);
+            }
+            Swal.fire({
+                title: "Factura creada con éxito!",
+                text: "Se ha descargado el pdf.",
+            }).then(() => {
+                navigate('/home')
+            });
+        } else {
+            console.log('No user data found in localStorage');
         }
-        Swal.fire({
-            title: "Factura creada con éxito!",
-            text: "Se ha descargado el pdf.",
-        }).then(() => {
-            navigate('/home')
-        });
-    } else {
-        console.log('No user data found in localStorage');
-    }
-};
+    };
 
 const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEmpresa, telefonoEmpresa, correoEmpresa,
     nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente) => {
@@ -275,9 +278,9 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
     const invoiceInfoColumns = ["", ""];
     const invoiceInfoRows = [
         ["Fecha", new Date().toLocaleDateString()],
-        ["Subtotal", `$${Math.round(subtotal)}`],
-        ["IVA (19%)", `$${Math.round(iva)}`],
-        ["Total General", `$${Math.round(totalGeneral)}`],
+        ["Subtotal", new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(subtotal)],
+        ["IVA (19%)", new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(iva)],
+        ["Total General", new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(totalGeneral)],
     ];
 
     doc.autoTable({
@@ -290,6 +293,8 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
 
     
 
+    
+
     // Guardar el PDF
     doc.save('factura.pdf');
 
@@ -297,6 +302,12 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
 };
     return (
         <div>
+            <Link to='/home' >
+                <button className='btn-volver'>
+                    <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024"><path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path></svg>
+                    <span>Volver</span>
+                </button>
+            </Link>
             <h2 style={{textAlign: 'center', marginTop: '50px'}}>Orden de Compra</h2>
             <form onSubmit={handleSubmit}>
                 <table>
