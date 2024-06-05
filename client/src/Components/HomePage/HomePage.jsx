@@ -83,9 +83,11 @@ const HomePage = () => {
                                     <td>
                                         {fechaOrdenChilena}
                                     </td>
-                                    <td>
-                                        <button style={{ marginLeft: '30px' }}>Ver detalle</button>
-                                    </td>
+                                    <Link to={`/detalle/${factura.numero_orden}`}>
+                                        <td>
+                                            <button style={{ marginLeft: '30px' }}>Ver detalle</button>
+                                        </td>
+                                    </Link>
                                 </tr>
                             );
                         })}

@@ -5,6 +5,7 @@ import Login from './Pages/Login';
 import CrearFactura from './Pages/CrearFactura';
 import PaginaHome from './Pages/PaginaHome';
 import PrivateRoute from './PrivateRoute';
+import PaginaDetFac from './Pages/PaginaDetFac';
 import Error404 from './Pages/Error404';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/factura" element={<CrearFactura />} />
       <Route path="/home" element={<PaginaHome />} />
+      <Route path="/detalle/:id" element={<PaginaDetFac />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

@@ -49,6 +49,28 @@ app.get("/facturas", (req, res) => {
     });
 });
 
+// Ruta para obtener detalles de una factura por numero_orden
+// Nueva ruta para obtener los detalles de una factura por numero_orden
+app.get('/api/factura/:id', (req, res) => {
+    const numero_orden = req.params.id;
+    const query = 'SELECT * FROM facturas WHERE numero_orden = ?';
+
+    db.query(query, [numero_orden], (err, result) => {
+        if (err) {
+            console.error('Error al obtener los detalles de la factura:', err.message);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+        if (result.length > 0) {
+            res.send(result[0]);
+        } else {
+            res.status(404).send({ error: 'Factura no encontrada' });
+        }
+    });
+});
+
+
+
 // Nueva ruta para el login
 app.post('/api/login', (req, res) => {
     const { rutEmpresa, password } = req.body;
