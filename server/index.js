@@ -31,6 +31,19 @@ app.get("/usuarios", (req, res) => {
     });
 });
 
+app.get("/facturas", (req, res) => {
+    const rut_proveedor = req.query.rut_proveedor;
+    db.query('SELECT * FROM facturas WHERE rut_proveedor = ?', [rut_proveedor], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+
+
 // Nueva ruta para el login
 app.post('/api/login', (req, res) => {
     const { rutEmpresa, password } = req.body;

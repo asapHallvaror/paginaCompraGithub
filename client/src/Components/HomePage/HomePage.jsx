@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './HomePage.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext'
@@ -7,6 +7,19 @@ const HomePage = () => {
   
     const userData = JSON.parse(localStorage.getItem('user'));
     const auth = useAuth();
+    const [facturas, setFacturas] = useState([]);
+
+
+
+    useEffect(() => {
+        const obtenerFacturas = async () => {
+            const response = await fetch(`http://localhost:3001/facturas?rut_proveedor=${userData.RUT}`);
+            const facturas = await response.json();
+            setFacturas(facturas);
+        };
+
+        obtenerFacturas();
+    }, [userData.RUT]);
 
     const handleLogout = () => {
         auth.signout(() => {
@@ -53,22 +66,29 @@ const HomePage = () => {
                     <thead>
                         <tr>
                             <th>Número orden</th>
-                            <th>Fecha orden</th>
+                            <th>Fecha factura</th>
                             <th>Ver detalle factura</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <p>12345</p>
-                            </td>
-                            <td>
-                                01/06/2024
-                            </td>
-                            <td>
-                                <button style={{ marginLeft: '30px' }}>Ver detalle</button>
-                            </td>
-                        </tr>
+                        {facturas.map(factura => {
+                            const fechaOrden = new Date(factura.fecha_orden);
+                            const fechaOrdenChilena = fechaOrden.toLocaleDateString('es-CL');
+
+                            return (
+                                <tr key={factura.numero_orden}>
+                                    <td>
+                                        <p>{factura.numero_orden}</p>
+                                    </td>
+                                    <td>
+                                        {fechaOrdenChilena}
+                                    </td>
+                                    <td>
+                                        <button style={{ marginLeft: '30px' }}>Ver detalle</button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
