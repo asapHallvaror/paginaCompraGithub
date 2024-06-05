@@ -41,6 +41,9 @@ const PaginaCrearFactura = () => {
     const handleDireccionChange = (e) => setDireccionCliente(e.target.value);
     const handleTelefonoChange = (e) => setTelefonoCliente(e.target.value);
     const handleCorreoChange = (e) => setCorreoCliente(e.target.value);
+    const handleSubtotalChange = (e) => setSubtotal(e.target.value);
+    const handleIvaChange = (e) => setIVA(e.target.value);
+    const handleTotalGeneralChange= (e) => setTotalGeneral(e.target.value);
 
 
     const navigate = useNavigate();
@@ -125,14 +128,25 @@ const PaginaCrearFactura = () => {
     const enviarFactura = async (facturaData) => {
         try {
             const response = await axios.post('http://localhost:3001/api/facturas', facturaData);
-            console.log('Factura enviada correctamente');
-            return response.data.numero_orden;
+            console.log('Factura enviada correctamente:', response.data);
+            if (response.data.success) {
+                return response.data.numero_orden;
+            } else {
+                console.error('Error al enviar la factura:', response.data.message);
+                return null;
+            }
         } catch (error) {
-            console.error('Error al enviar la factura:', error.message);
+            console.error('Error al enviar la factura:', error.message, error.response?.data);
+            return null; // Ensure that null is returned if there's an error
         }
     };
     
     const enviarDetallesFactura = async (numero_orden) => {
+        if (!productos || productos.length === 0) {
+            console.error('No hay productos para enviar');
+            return;
+        }
+    
         for (let producto of productos) {
             const detalleFacturaData = {
                 numero_orden,
@@ -142,18 +156,20 @@ const PaginaCrearFactura = () => {
                 total: producto.total
             };
     
+            console.log('Enviando detalle de factura:', detalleFacturaData);
+    
             try {
-                await axios.post('http://localhost:3001/api/detalles_facturas', detalleFacturaData);
+                const response = await axios.post('http://localhost:3001/api/detalles_facturas', detalleFacturaData);
+                console.log('Detalle de factura enviado:', response.data);
             } catch (error) {
-                console.error('Error al enviar el detalle de la factura:', error.message);
-                return;
+                console.error('Error al enviar el detalle de la factura:', error.message, error.response?.data);
+                return; // Stop on first error
             }
         }
     
         console.log('Detalles de factura enviados correctamente');
     };
     
-
     const handleSubmit = async event => {
         event.preventDefault();
         const user = JSON.parse(localStorage.getItem('user'));
@@ -163,7 +179,7 @@ const PaginaCrearFactura = () => {
             generarPDF(
                 numFactura,
                 RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
-                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente
+                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, subtotal, iva, totalGeneral
             );
     
             // Enviar los datos de la factura al servidor
@@ -184,7 +200,10 @@ const PaginaCrearFactura = () => {
                 nombre_cliente: nombreCliente,
                 direccion_cliente: direccionCliente,
                 telefono_cliente: telefonoCliente,
-                correo_cliente: correoCliente
+                correo_cliente: correoCliente,
+                subtotal: subtotal,
+                iva: iva,
+                total: totalGeneral
             };
     
             const numero_orden = await enviarFactura(facturaData);
@@ -201,6 +220,8 @@ const PaginaCrearFactura = () => {
             console.log('No user data found in localStorage');
         }
     };
+    
+    
 
 const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEmpresa, telefonoEmpresa, correoEmpresa,
     nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente) => {
@@ -297,6 +318,7 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
 
     // Guardar el PDF
     doc.save('factura.pdf');
+    
 
     
 };

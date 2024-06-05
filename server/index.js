@@ -2,9 +2,12 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql');
 const cors = require('cors');
+const multer = require('multer');
+const bodyParser = require('body-parser');
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -20,6 +23,10 @@ db.connect(err => {
     }
     console.log('Connected to the database');
 });
+
+// Configuración de multer para el manejo de archivos
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 app.get("/usuarios", (req, res) => {
     db.query('SELECT * FROM usuario', (err, result) => {
@@ -40,18 +47,7 @@ app.get("/facturas", (req, res) => {
             res.send(result);
         }
     });
-});app.get("/facturas", (req, res) => {
-    const rut_proveedor = req.query.rut_proveedor;
-    db.query('SELECT * FROM facturas WHERE rut_proveedor = ?', [rut_proveedor], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result);
-        }
-    });
 });
-
-
 
 // Nueva ruta para el login
 app.post('/api/login', (req, res) => {
@@ -72,7 +68,6 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-
 // Ruta para insertar una nueva factura
 app.post('/api/facturas', (req, res) => {
     const facturaData = req.body;
@@ -92,6 +87,7 @@ app.post('/api/facturas', (req, res) => {
 // Ruta para insertar un detalle de factura
 app.post('/api/detalles_facturas', (req, res) => {
     const detalleFacturaData = req.body;
+    console.log('Received detalleFacturaData:', detalleFacturaData); // Log the received data
     const query = 'INSERT INTO detalles_facturas SET ?';
 
     db.query(query, detalleFacturaData, (err, result) => {
@@ -105,6 +101,24 @@ app.post('/api/detalles_facturas', (req, res) => {
     });
 });
 
+// Ruta para subir el archivo PDF y asociarlo con el numero_orden
+app.post('/upload', upload.single('pdf'), (req, res) => {
+    const numeroOrden = req.body.numero_orden;
+    
+    if (!req.file) {
+        return res.status(400).send('No se subió ningún archivo');
+    }
+
+    const pdfBuffer = req.file.buffer;
+    const query = 'UPDATE facturas SET pdf = ? WHERE numero_orden = ?';
+
+    db.query(query, [pdfBuffer, numeroOrden], (err, result) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.send('Archivo subido y guardado en la base de datos');
+    });
+});
 
 app.listen(3001, () => {
     console.log('Corriendo en el puerto 3001');
