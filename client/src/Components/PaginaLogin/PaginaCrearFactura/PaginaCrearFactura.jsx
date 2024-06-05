@@ -8,6 +8,7 @@ import companyData from '../../../CompanyData.js';
 import autoTable from 'jspdf-autotable';
 import { toDataURL } from 'qrcode';
 import { useAuth } from '../../../auth/AuthContext.js';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -41,7 +42,7 @@ const PaginaCrearFactura = () => {
     const handleCorreoChange = (e) => setCorreoCliente(e.target.value);
 
 
-
+    const navigate = useNavigate();
 
 
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -187,6 +188,12 @@ const PaginaCrearFactura = () => {
         if (numero_orden) {
             await enviarDetallesFactura(numero_orden);
         }
+        Swal.fire({
+            title: "Factura creada con éxito!",
+            text: "Se ha descargado el pdf.",
+        }).then(() => {
+            navigate('/home')
+        });
     } else {
         console.log('No user data found in localStorage');
     }
@@ -198,7 +205,11 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
 
         // Título
         doc.setFontSize(18);
-        doc.text(`Factura: ${numFactura}`, 14, 22);
+        doc.text(`Factura`, 14, 22);
+
+        doc.setFontSize(10);
+        doc.text('Fecha        : ' + new Date().toLocaleDateString(), 84, 20);
+        doc.text(`N° de factura: ${numFactura}`, 84, 25);
     
         // Subtítulo
         doc.setFontSize(14);
@@ -314,8 +325,8 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                     <tbody>
                         <tr>
                             <td><input type="text" value={userData.RUT} name='rutEmpProv' placeholder='Ingresa rut empresa' required minLength="10" maxLength="10"/></td>
-                            <td><input type="text" value={userData.RAZON_SOCIAL} name='nomEmpProv' placeholder='Ingresa nombre empresa' required minLength="10" maxLength="10"/></td>
-                            <td><input type="text" value={userData.DIRECCION} name='dirEmpProv' placeholder='Ingresa direccion empresa' required minLength="10" maxLength="10"/></td>
+                            <td><input type="text" value={userData.RAZON_SOCIAL} name='nomEmpProv' placeholder='Ingresa nombre empresa' required minLength="5" maxLength="45"/></td>
+                            <td><input type="text" value={userData.DIRECCION} name='dirEmpProv' placeholder='Ingresa direccion empresa' required minLength="5" maxLength="45"/></td>
                             <td><input type="number" value={userData.TELEFONO} name='telEmpProv' placeholder='Ingresa teléfono' required/></td>
                             <td><input type="email" value={userData.CORREO} name='mailEmpProv' placeholder='Ingresa correo' required/></td>
                             <td><input type="text" value={userData.SITIO_WEB} name='webEmpProv' placeholder='Ingresa página web'/></td>
@@ -352,8 +363,8 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                                     name='nomEmpCliente' 
                                     placeholder='Ingresa nombre' 
                                     required 
-                                    minLength="10" 
-                                    maxLength="10" 
+                                    minLength="5" 
+                                    maxLength="45" 
                                     value={nombreCliente} 
                                     onChange={handleNombreChange} 
                                 />
@@ -364,8 +375,8 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                                     name='dirEmpCliente' 
                                     placeholder='Ingresa direccion' 
                                     required 
-                                    minLength="10" 
-                                    maxLength="10" 
+                                    minLength="5" 
+                                    maxLength="45" 
                                     value={direccionCliente} 
                                     onChange={handleDireccionChange} 
                                 />
