@@ -60,16 +60,16 @@ const HomePage = () => {
                     </button>
                 </Link>
             </div>
-            
+
             <div className="bottom-container">
                 <h2>Tus facturas</h2>
                 {facturas.length === 0 ? (
-                    <p style={{fontSize: '20px', textAlign: 'center'}}>No has creado ninguna factura <br />Puedes crear una nueva factura en el botón superior!</p>
+                    <p style={{fontSize: '20px', textAlign: 'center'}}>No has creado ninguna factura <br />¡Puedes crear una nueva factura en el botón superior!</p>
                 ) : (
                     <table>
                         <thead>
                             <tr>
-                                <th>Número orden</th>
+                                <th>Número de orden</th>
                                 <th>Fecha factura</th>
                                 <th>Ver detalle factura</th>
                             </tr>
