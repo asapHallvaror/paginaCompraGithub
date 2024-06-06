@@ -38,7 +38,7 @@
   
   
   <h1>Contexto</h1>
-  <p>YZY Music es una empresa de venta de discos al por mayor, debido a la alta demanda de compras, decidieron automatizar el proceso de creación de facturas a partir de órdenes de compras, este proceso consiste en tomar los datos de la orden de compra y calcular los valores por producto para generar la factura. Una vez automatizado este proceso, solo queda ingresar los datos de la orden de compra en la web, y esta calcula todo para luego generar la facturaen formato PDF. </p>
+  <p>YZY Music es una empresa de venta de discos al por mayor, debido a la alta demanda de compras, decidieron automatizar el proceso de creación de facturas a partir de órdenes de compras, este proceso consiste en tomar los datos de la orden de compra y calcular los valores por producto para generar la factura. Una vez automatizado este proceso, solo queda ingresar los datos de la orden de compra en la web, y esta calcula todo para luego generar la factura en formato PDF. </p>
   <p>
   <h1></h1>
 </div>
