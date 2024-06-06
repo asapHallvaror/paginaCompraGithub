@@ -7,7 +7,7 @@
 <div align="center">
     
   <h1>Propósito</h1>
-  <p>El propósito de este proyecto es desarrollar una página la cual pueda realizar el ingreso de ordenes de compra con sus diferentes detalles como el número de orden, la fecha, datos de la empresa proovedora, datos de la empresa cliente y los productos</p>
+  <p>Este proyecto permite crear facturas a partir de órdenes de compras. La persona que ingrese a la página podrá ingresar los productos que necesite y esta calculará todo lo correspondiente a la factura, una vez esté todo listo, debe hacer click en el botón generar factura y se descargará en formato PDF. Las facturas de cada cliente quedarán guardadas en la base de datos y este podrá acceder a ellas cuando lo vea necesario.</p>
   <p><strong>Además debe tener un botón el cual agregue más productos y uno para eliminar los productos</strong> (en caso de que la empresa cliente requiera)</p>
   <h2>La factura final debería asemejarse a la siguiente:</h2>
   <img src="https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/a53f6baf-9e63-40ad-8295-96946b53fda8" />
@@ -38,5 +38,7 @@
   
   
   <h1>Contexto</h1>
+  <p>YZY Music es una empresa de venta de discos al por mayor, debido a la alta demanda de compras, decidieron automatizar el proceso de creación de facturas a partir de órdenes de compras, este proceso consiste en tomar los datos de la orden de compra y calcular los valores por producto para generar la factura. Una vez automatizado este proceso, solo queda ingresar los datos de la orden de compra en la web, y esta calcula todo para luego generar la facturaen formato PDF. </p>
+  <p>
   <h1></h1>
 </div>
