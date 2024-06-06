@@ -26,6 +26,9 @@ const PaginaDetFac = () => {
         return <div>Cargando...</div>;
     }
 
+    // Convertir la cadena JSON de productos a un objeto JavaScript
+    const productos = JSON.parse(factura.productos);
+
     // Darle formato bonito a la fecha
     const fecha = new Date(factura.fecha_orden);
     const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -105,6 +108,28 @@ const PaginaDetFac = () => {
                     </tr>
                 </tbody>
             </table>
+            <h2>Productos de la factura</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {productos.map((producto, index) => (
+                        <tr key={index}>
+                            <td>{producto.nombre}</td>
+                            <td>{Number(producto.precio).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
+                            <td>{producto.cantidad}</td>
+                            <td>{Number(producto.total).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
             <h2>Montos</h2>
             <table>
                 <tbody>

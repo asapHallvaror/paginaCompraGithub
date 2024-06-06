@@ -34,7 +34,7 @@ const Login = () => {
       localStorage.setItem('isLoggedIn', 'true');
       navigate('/home');
     } else {
-      alert('Invalid credentials');
+      alert('Rut y/o contraseña incorrectos. Intente nuevamente.');
     }
   };
 
