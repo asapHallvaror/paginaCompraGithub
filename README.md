@@ -3,18 +3,40 @@
     <img src="https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/ff69859c-7cf7-4c4e-819d-06ff1eca742e"/>
 </h1>
 <p align="center">Hecho por: Álvaro Morales y Vicente Zapata</p>
+<p align="center">Proyecto desarrollado en React. Base de datos MYSQL.</p>
 <div align="center">
     
   <h1>Propósito</h1>
-  <p>El propósito de este proyecto es desarrollar una página la cual pueda realizar el ingreso de ordenes de compra con todos sus detalles que son los siguientes:</p>
-  <p>- Nombre del producto</p>
-  <p>- Cantidad del producto</p>
-  <p>- Precio del producto</p>
-  <p><strong>Además debe tener un botón el cual agregue más productos</strong> (en caso de que la empresa cliente requiera)</p>
+  <p>El propósito de este proyecto es desarrollar una página la cual pueda realizar el ingreso de ordenes de compra con sus diferentes detalles como el número de orden, la fecha, datos de la empresa proovedora, datos de la empresa cliente y los productos</p>
+  <p><strong>Además debe tener un botón el cual agregue más productos y uno para eliminar los productos</strong> (en caso de que la empresa cliente requiera)</p>
   <h2>La factura final debería asemejarse a la siguiente:</h2>
   <img src="https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/a53f6baf-9e63-40ad-8295-96946b53fda8" />
   
   <h1>Instalación</h1>
+  <p>1. Descargar o clonar el repositorio.</p>
+  <p>2. Descomprimirlo y abrir la carpeta.</p>
+  <p>3. Ingresar a la carpeta client, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
+  <p>4. Ingresar a la carpeta server, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
+  <h3>Ahora hay que hacer la base de datos :O</h3>
+  <p>5. Abrir el archivo contenido en la carpeta server llamado 'yzymusicMYSQL.sql'</p>
+  <p>6. Copiar todo el contenido</p>
+  <p>7. Abrir LARAGON (si no lo tiene instalado, busque 'Laragon' en su navegador, descargue el instalador e instale el programa)</p>
+  <p>8. Presionar el botón "Iniciar todo"</p>
+  <p>9. Presionar el botón "Base de Datos"</p>
+  <p>10. Presionar botón "Abrir"</p>
+  <p>10. Ahora, debe dirigirse a donde dice "Laragon.MySQL", darle click derecho, dirigirse a "Crear nuevo" y clickear en "Base de datos"</p>
+  <p>12. En el campo "Nombre", debe ingresar "yzymusic"</p>
+  <p>13. Clickear boton "Aceptar"</p>
+  <p>14. Debe hacer click a su base de datos recién creada y dirigirse a la pestaña "Consulta"</p>
+  <p>15. Pegue todo el código que copió del archivo 'yzymusicMYSQL.sql'</p>
+  <p>16. Presione f9</p>
+  <h3>Instrucciones para levantar la página</h3>
+  <p>1. Dirijase a la carpeta server de la carpeta del repositorio y abra una terminal</p>
+  <p>2. Ejecute el comando "node index.js" y deje la terminal abierta</p>
+  <p>3. Ahora dirijase a la carpeta client de la carpeta del repositorio y abra una terminal</p>
+  <p>4. Ejecute el comando "npm" start y listo!! La página se debería abrir automáticamente en unos segundos.</p>
+  
+  
   <h1>Contexto</h1>
   <h1></h1>
 </div>
