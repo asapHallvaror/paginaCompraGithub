@@ -182,7 +182,10 @@ const PaginaCrearFactura = () => {
                 nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, subtotal, iva, totalGeneral
             );
     
-            // Enviar los datos de la factura al servidor
+            // Convertir productos a JSON
+            const productosJSON = JSON.stringify(productos);
+    
+            // Construir los datos de la factura, incluyendo la lista de productos
             const fechaOrden = new Date();
             const fechaOrdenFormatoMySQL = `${fechaOrden.getFullYear()}-${fechaOrden.getMonth()+1}-${fechaOrden.getDate()} ${fechaOrden.getHours()}:${fechaOrden.getMinutes()}:${fechaOrden.getSeconds()}`;
     
@@ -203,9 +206,11 @@ const PaginaCrearFactura = () => {
                 correo_cliente: correoCliente,
                 subtotal: subtotal,
                 iva: iva,
-                total: totalGeneral
+                total: totalGeneral,
+                productos: productosJSON // Enviar productos como cadena JSON
             };
     
+            // Enviar los datos de la factura al servidor
             const numero_orden = await enviarFactura(facturaData);
             if (numero_orden) {
                 await enviarDetallesFactura(numero_orden);
@@ -220,6 +225,8 @@ const PaginaCrearFactura = () => {
             console.log('No user data found in localStorage');
         }
     };
+    
+    
     
     
 
