@@ -60,39 +60,44 @@ const HomePage = () => {
                     </button>
                 </Link>
             </div>
+            
             <div className="bottom-container">
                 <h2>Tus facturas</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Número orden</th>
-                            <th>Fecha factura</th>
-                            <th>Ver detalle factura</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {facturas.map(factura => {
-                            const fechaOrden = new Date(factura.fecha_orden);
-                            const fechaOrdenChilena = fechaOrden.toLocaleDateString('es-CL');
+                {facturas.length === 0 ? (
+                    <p style={{fontSize: '20px', textAlign: 'center'}}>No has creado ninguna factura <br />Puedes crear una nueva factura en el botón superior!</p>
+                ) : (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Número orden</th>
+                                <th>Fecha factura</th>
+                                <th>Ver detalle factura</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {facturas.map(factura => {
+                                const fechaOrden = new Date(factura.fecha_orden);
+                                const fechaOrdenChilena = fechaOrden.toLocaleDateString('es-CL');
 
-                            return (
-                                <tr key={factura.numero_orden}>
-                                    <td>
-                                        <p>{factura.numero_orden}</p>
-                                    </td>
-                                    <td>
-                                        {fechaOrdenChilena}
-                                    </td>
-                                    <Link to={`/detalle/${factura.numero_orden}`}>
+                                return (
+                                    <tr key={factura.numero_orden}>
                                         <td>
-                                            <button style={{ marginLeft: '30px' }}>Ver detalle</button>
+                                            <p>{factura.numero_orden}</p>
                                         </td>
-                                    </Link>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                        <td>
+                                            {fechaOrdenChilena}
+                                        </td>
+                                        <Link to={`/detalle/${factura.numero_orden}`}>
+                                            <td>
+                                                <button style={{ marginLeft: '30px' }}>Ver detalle</button>
+                                            </td>
+                                        </Link>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         </div>
     </div>
