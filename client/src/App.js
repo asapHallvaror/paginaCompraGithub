@@ -7,6 +7,7 @@ import PaginaHome from './Pages/PaginaHome';
 import PrivateRoute from './PrivateRoute';
 import PaginaDetFac from './Pages/PaginaDetFac';
 import Error404 from './Pages/Error404';
+import RectificarFactura from './Pages/PaginaRectificarFactura'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/factura" element={<CrearFactura />} />
       <Route path="/home" element={<PaginaHome />} />
       <Route path="/detalle/:id" element={<PaginaDetFac />} />
+      <Route path="/rectificar/:id" element={<RectificarFactura />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

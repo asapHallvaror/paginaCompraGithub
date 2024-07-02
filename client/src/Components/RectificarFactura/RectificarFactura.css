@@ -1,0 +1,60 @@
+.factura-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.factura-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.productos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.productos-table th,
+.productos-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.productos-table th {
+    background-color: #f0f0f0;
+    text-align: left;
+}
+
+.botones-container {
+    margin-top: 80px;
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.botones-container button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.botones-container button:hover {
+    background-color: #0056b3;
+}
+
+.botones-container button:active {
+    background-color: #004499;
+}
+
+.h1corte{
+    text-align: center;
+}
+
+.pcorte{
+    text-align: center;
+    margin-bottom: 30px;
+}

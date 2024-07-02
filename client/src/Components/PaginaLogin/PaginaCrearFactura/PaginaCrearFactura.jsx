@@ -281,7 +281,7 @@ const PaginaCrearFactura = () => {
     
 
 const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEmpresa, telefonoEmpresa, correoEmpresa,
-    nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente) => {
+    nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, regionDespacho, comunaDespacho ,direccionDespacho, fechaDespacho) => {
         const doc = new jsPDF();
 
         // Título
