@@ -178,3 +178,14 @@ h2 {
     box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
     transform: translateY(-2px);
 }
+
+.dirCheckbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dirCheckbox p{
+    font-weight: 500;
+    font-size: 14px;
+}

@@ -69,6 +69,21 @@ app.get('/api/factura/:id', (req, res) => {
     });
 });
 
+app.get('/api/next-invoice-number', (req, res) => {
+    const query = `SELECT AUTO_INCREMENT as nextInvoiceNumber
+                   FROM information_schema.TABLES
+                   WHERE TABLE_SCHEMA = 'yzymusic' AND TABLE_NAME = 'facturas'`;
+
+    db.query(query, (err, result) => {
+        if (err) {
+            console.error('Error al obtener el próximo número de factura:', err);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+        res.send({ nextInvoiceNumber: result[0].nextInvoiceNumber });
+    });
+});
+
 
 
 // Nueva ruta para el login

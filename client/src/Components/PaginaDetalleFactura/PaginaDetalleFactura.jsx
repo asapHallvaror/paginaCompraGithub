@@ -34,6 +34,12 @@ const PaginaDetFac = () => {
     const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
     const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
 
+    // Darle formato bonito a la fecha de estimada de despacho
+    const fechaDespacho = new Date(factura.fechaDespacho);
+    const opcionesDos = { year: 'numeric', month: 'long', day: 'numeric' };
+    const fechaEstFormateada = fechaDespacho.toLocaleDateString('es-ES', opcionesDos);
+
+
     return (
         <div className='detalle-container'>
             
@@ -47,6 +53,10 @@ const PaginaDetFac = () => {
                     <tr>
                         <th>Fecha de Factura:</th>
                         <td>{fechaFormateada}</td>
+                    </tr>
+                    <tr>
+                        <th>Estado de la factura:</th>
+                        <td>{factura.estado_factura}</td>
                     </tr>
                 </tbody>
             </table>
@@ -127,6 +137,31 @@ const PaginaDetFac = () => {
                             <td>{Number(producto.total).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
                         </tr>
                     ))}
+                </tbody>
+            </table>
+            <h2>Detalles del despacho</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Región:</th>
+                        <td>{factura.regionDespacho}</td>    
+                    </tr>
+                    <tr>
+                        <th>Comuna:</th>
+                        <td>{factura.comunaDespacho}</td>
+                    </tr>
+                    <tr>
+                        <th>Dirección:</th>
+                        <td>{factura.direccionDespacho}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha estimada de entrega:</th>
+                        <td>{fechaEstFormateada}</td>
+                    </tr>
+                    <tr>
+                        <th>Estado del despacho:</th>
+                        <td>{factura.estado_entrega}</td>
+                    </tr>
                 </tbody>
             </table>
 

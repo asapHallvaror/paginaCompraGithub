@@ -24,14 +24,24 @@ const PaginaCrearFactura = () => {
     const [direccion, setDireccion] = useState("");
     const [telefono, setTelefono] = useState("");
     const [correo, setCorreo] = useState("");
+    
+    const [numFactura, setNumFactura] = useState(null); // Inicializar con null o un valor que indique carga inicial
+    const [fechaOrden, setFechaOrden] = useState('');
+    const [fechaDespacho, setFechaDespacho] = useState('');
 
-    const [numFactura, setNumFactura] = useState(0);
 
     const [rutCliente, setRutCliente] = useState('');
     const [nombreCliente, setNombreCliente] = useState('');
     const [direccionCliente, setDireccionCliente] = useState('');
     const [telefonoCliente, setTelefonoCliente] = useState('');
     const [correoCliente, setCorreoCliente] = useState('');
+    
+    const [regionDespacho, setRegionDespacho] = useState('');
+    const [comunaDespacho, setComunaDespacho] = useState('');
+    const [direccionDespacho, setDireccionDespacho] = useState('');
+    const [usarDireccionCliente, setUsarDireccionCliente] = useState(false);
+
+
 
     // Manejadores de eventos para los inputs del cliente
     const handleNumFactura = (e) => setNumFactura(e.target.value);
@@ -41,6 +51,12 @@ const PaginaCrearFactura = () => {
     const handleDireccionChange = (e) => setDireccionCliente(e.target.value);
     const handleTelefonoChange = (e) => setTelefonoCliente(e.target.value);
     const handleCorreoChange = (e) => setCorreoCliente(e.target.value);
+    const handleRegionChange = (e) => setRegionDespacho(e.target.value);
+    const handleComunaChange = (e) => setComunaDespacho(e.target.value);
+    const handleDireccionDespachoChange = (e) => setDireccionDespacho(e.target.value);
+    const handleFechaOrdenChange = (e) => setFechaOrden(e.target.value);
+    const handleFechaDespachoChange = (e) => setFechaDespacho(e.target.value);
+
     const handleSubtotalChange = (e) => setSubtotal(e.target.value);
     const handleIvaChange = (e) => setIVA(e.target.value);
     const handleTotalGeneralChange= (e) => setTotalGeneral(e.target.value);
@@ -76,13 +92,30 @@ const PaginaCrearFactura = () => {
         }
     };
     useEffect(() => {
-        // Verificar si el usuario está autenticado al cargar la página
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (!isLoggedIn) {
-            // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
-            handleLogout();
+            handleLogout(); // Redirigir si no está autenticado
+        } else {
+            obtenerSiguienteNumeroFactura(); // Obtener el número de factura si está autenticado
         }
     }, []);
+
+
+    const obtenerSiguienteNumeroFactura = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/api/next-order-number');
+            console.log(response.data); // Asegúrate de que este log muestra el valor esperado
+            const nextOrderNumber = response.data.nextOrderNumber;
+            if (nextOrderNumber) {
+                setNumFactura(nextOrderNumber); // Asegúrate de que nextOrderNumber no es undefined o null
+            } else {
+                console.error('El número de orden siguiente recibido es undefined o null.');
+            }
+        } catch (error) {
+            console.error('Error al obtener el siguiente número de orden:', error);
+        }
+    };
+    
 
     const handleInputChange = (index, event) => {
         const { name, value } = event.target;
@@ -95,6 +128,19 @@ const PaginaCrearFactura = () => {
         }
         setProductos(newProductos);
     };
+
+    const handleCheckboxChange = (event) => {
+        setUsarDireccionCliente(event.target.checked);
+        if (event.target.checked) {
+            // Copia la dirección del cliente al despacho
+            setDireccionDespacho(direccionCliente);
+        } else {
+            // Limpia el campo de dirección de despacho
+            setDireccionDespacho('');
+        }
+    };
+
+    
 
     
 
@@ -186,12 +232,11 @@ const PaginaCrearFactura = () => {
             const productosJSON = JSON.stringify(productos);
     
             // Construir los datos de la factura, incluyendo la lista de productos
-            const fechaOrden = new Date();
-            const fechaOrdenFormatoMySQL = `${fechaOrden.getFullYear()}-${fechaOrden.getMonth()+1}-${fechaOrden.getDate()} ${fechaOrden.getHours()}:${fechaOrden.getMinutes()}:${fechaOrden.getSeconds()}`;
+            
     
             const facturaData = {
                 numero_orden: numFactura,
-                fecha_orden: fechaOrdenFormatoMySQL,
+                fecha_orden: fechaOrden,
                 rut_proveedor: RUT,
                 razon_social_proveedor: RAZON_SOCIAL,
                 direccion_proveedor: DIRECCION,
@@ -207,7 +252,12 @@ const PaginaCrearFactura = () => {
                 subtotal: subtotal,
                 iva: iva,
                 total: totalGeneral,
-                productos: productosJSON // Enviar productos como cadena JSON
+                productos: productosJSON, // Enviar productos como cadena JSON
+                regionDespacho: regionDespacho,
+                comunaDespacho: comunaDespacho,
+                direccionDespacho: direccionDespacho,
+                fechaDespacho: fechaDespacho
+                
             };
     
             // Enviar los datos de la factura al servidor
@@ -346,8 +396,8 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="number" name='numFactura' value={numFactura} onChange={handleNumFactura} placeholder='Ingresa número de orden' required/></td>
-                            <td><input className='fecha-input' type="date" name='fecha' required/></td>
+                            <td><input type="text" value={numFactura || ''} disabled /></td>
+                            <input className='fecha-input' type="date" name='fechaOrden' required value={fechaOrden} onChange={handleFechaOrdenChange} />
                         </tr>
                     </tbody>
                 </table>
@@ -403,7 +453,7 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                                     name='nomEmpCliente' 
                                     placeholder='Ingresa nombre' 
                                     required 
-                                    minLength="5" 
+                                    minLength="3" 
                                     maxLength="45" 
                                     value={nombreCliente} 
                                     onChange={handleNombreChange} 
@@ -442,6 +492,66 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                                 />
                             </td>
 
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 style={{textAlign: 'center', marginTop: '30px'}}>Datos de despacho</h3>
+                <div className='dirCheckbox'>
+                    <input 
+                        type="checkbox" 
+                        className='dirCheckbox'
+                        checked={usarDireccionCliente} 
+                        onChange={handleCheckboxChange} 
+                    /> <p>Usar la misma dirección del cliente para despacho</p>
+                </div>
+                <table>
+                    <thead>
+                        <th>Región*</th>
+                        <th>Comuna*</th>
+                        <th>Dirección*</th>
+                        <th>Fecha estimada de entrega*</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input 
+                                    type="text"
+                                    name="regionDespacho"
+                                    placeholder='Ingresa la región'
+                                    required
+                                    value={regionDespacho}
+                                    onChange={handleRegionChange}
+                                    minLength="5"
+                                    maxLength="80"
+                                />
+                            </td>
+                            <td>
+                                <input 
+                                    type="text"
+                                    name="comunaDespacho"
+                                    placeholder='Ingresa la comuna'
+                                    required
+                                    value={comunaDespacho}
+                                    onChange={handleComunaChange}
+                                    minLength="3"
+                                    maxLength="80"
+                                />
+                            </td>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    name='dirDespacho' 
+                                    placeholder='Ingresa direccion de despacho' 
+                                    required 
+                                    minLength="5" 
+                                    maxLength="45" 
+                                    value={direccionDespacho} 
+                                    onChange={handleDireccionDespachoChange} 
+                                />
+                            </td>
+                            <td>
+                                <input className='fecha-input' type="date" name='fechaDespacho' required value={fechaDespacho} onChange={handleFechaDespachoChange} />
+                            </td>
                         </tr>
                     </tbody>
                 </table>
