@@ -121,6 +121,35 @@ app.post('/api/facturas', (req, res) => {
     });
 });
 
+// Ruta para actualizar una factura existente
+// Ruta para actualizar una factura existente
+app.put('/api/factura/:id', (req, res) => {
+    const numero_orden = req.params.id;
+    let updatedFactura = req.body;
+
+    // Establecer el estado de la factura a "rectificada"
+    updatedFactura.estado_factura = 'rectificada';
+
+    // Generar la consulta de actualización
+    const query = 'UPDATE facturas SET ? WHERE numero_orden = ?';
+    
+    db.query(query, [updatedFactura, numero_orden], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar la factura:', err.message);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+        if (result.affectedRows > 0) {
+            res.send({ success: true, message: 'Factura actualizada con éxito' });
+        } else {
+            res.status(404).send({ error: 'Factura no encontrada' });
+        }
+    });
+});
+
+
+
+
 // Ruta para insertar un detalle de factura
 app.post('/api/detalles_facturas', (req, res) => {
     const detalleFacturaData = req.body;

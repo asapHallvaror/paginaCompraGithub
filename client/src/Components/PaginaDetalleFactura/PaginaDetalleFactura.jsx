@@ -4,45 +4,41 @@ import { useParams, Link } from 'react-router-dom';
 import './PaginaDetalleFactura.css';
 
 const PaginaDetFac = () => {
-    const { id } = useParams();  // Use "id" to match the route parameter
+    const { id } = useParams();
     const [factura, setFactura] = useState(null);
 
     useEffect(() => {
-        if (id) {  // Ensure that id is defined
-            const fetchFactura = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:3001/api/factura/${id}`);
-                    setFactura(response.data); // Directly get the factura object
-                } catch (error) {
-                    console.error('Error al obtener los detalles de la factura:', error.message, error.response?.data);
+        const fetchFactura = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3001/api/factura/${id}`);
+                const facturaData = response.data;
+                
+                // Parsea la propiedad productos si es una cadena JSON
+                if (typeof facturaData.productos === 'string') {
+                    facturaData.productos = JSON.parse(facturaData.productos);
                 }
-            };
-
+                
+                setFactura(facturaData);
+            } catch (error) {
+                console.error('Error al obtener los detalles de la factura:', error.message, error.response?.data);
+            }
+        };
+    
+        if (id) {
             fetchFactura();
         }
     }, [id]);
+    
 
     if (!factura) {
         return <div>Cargando...</div>;
     }
 
-    // Convertir la cadena JSON de productos a un objeto JavaScript
-    const productos = JSON.parse(factura.productos);
-
-    // Darle formato bonito a la fecha
-    const fecha = new Date(factura.fecha_orden);
-    const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
-    const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
-
-    // Darle formato bonito a la fecha de estimada de despacho
-    const fechaDespacho = new Date(factura.fechaDespacho);
-    const opcionesDos = { year: 'numeric', month: 'long', day: 'numeric' };
-    const fechaEstFormateada = fechaDespacho.toLocaleDateString('es-ES', opcionesDos);
-
+    const productos = Array.isArray(factura.productos) ? factura.productos : [];
 
     return (
         <div className='detalle-container'>
-            <Link to='/home' >
+            <Link to='/home'>
                 <button className='btn-volver'>
                     <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024"><path d="M874.690416 495.52477c0 11.2973-9.168824 20.466124-20.466124 20.466124l-604.773963 0 188.083679 188.083679c7.992021 7.992021 7.992021 20.947078 0 28.939099-4.001127 3.990894-9.240455 5.996574-14.46955 5.996574-5.239328 0-10.478655-1.995447-14.479783-5.996574l-223.00912-223.00912c-3.837398-3.837398-5.996574-9.046027-5.996574-14.46955 0-5.433756 2.159176-10.632151 5.996574-14.46955l223.019353-223.029586c7.992021-7.992021 20.957311-7.992021 28.949332 0 7.992021 8.002254 7.992021 20.957311 0 28.949332l-188.073446 188.073446 604.753497 0C865.521592 475.058646 874.690416 484.217237 874.690416 495.52477z"></path></svg>
                     <span>Volver</span>
@@ -57,7 +53,7 @@ const PaginaDetFac = () => {
                     </tr>
                     <tr>
                         <th>Fecha de Factura:</th>
-                        <td>{fechaFormateada}</td>
+                        <td>{new Date(factura.fecha_orden).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                     </tr>
                     <tr>
                         <th>Estado de la factura:</th>
@@ -149,7 +145,7 @@ const PaginaDetFac = () => {
                 <tbody>
                     <tr>
                         <th>Región:</th>
-                        <td>{factura.regionDespacho}</td>    
+                        <td>{factura.regionDespacho}</td>
                     </tr>
                     <tr>
                         <th>Comuna:</th>
@@ -161,7 +157,7 @@ const PaginaDetFac = () => {
                     </tr>
                     <tr>
                         <th>Fecha estimada de entrega:</th>
-                        <td>{fechaEstFormateada}</td>
+                        <td>{new Date(factura.fechaDespacho).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                     </tr>
                     <tr>
                         <th>Estado del despacho:</th>
@@ -192,7 +188,6 @@ const PaginaDetFac = () => {
                     Hacer rectificaciones
                 </button>
             </Link>
-            
         </div>
     );
 };
