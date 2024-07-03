@@ -7,6 +7,7 @@ const PaginaDetFac = () => {
     const { id } = useParams();
     const [factura, setFactura] = useState(null);
 
+    
     useEffect(() => {
         const fetchFactura = async () => {
             try {
@@ -33,6 +34,9 @@ const PaginaDetFac = () => {
     if (!factura) {
         return <div>Cargando...</div>;
     }
+
+    
+    
 
     const productos = Array.isArray(factura.productos) ? factura.productos : [];
 
@@ -61,6 +65,7 @@ const PaginaDetFac = () => {
                     </tr>
                 </tbody>
             </table>
+            
             <h2>Datos del proveedor</h2>
             <table>
                 <tbody>
@@ -165,6 +170,7 @@ const PaginaDetFac = () => {
                     </tr>
                 </tbody>
             </table>
+            
 
             <h2>Montos</h2>
             <table>

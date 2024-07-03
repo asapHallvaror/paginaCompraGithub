@@ -8,6 +8,7 @@ import PrivateRoute from './PrivateRoute';
 import PaginaDetFac from './Pages/PaginaDetFac';
 import Error404 from './Pages/Error404';
 import RectificarFactura from './Pages/PaginaRectificarFactura'
+import PaginaCambiarEst from './Pages/PaginaCambiarEst';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/home" element={<PaginaHome />} />
       <Route path="/detalle/:id" element={<PaginaDetFac />} />
       <Route path="/rectificar/:id" element={<RectificarFactura />} />
+      <Route path="/cambiarestado/:id" element={<PaginaCambiarEst />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

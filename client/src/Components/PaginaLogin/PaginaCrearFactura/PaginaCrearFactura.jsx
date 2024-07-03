@@ -225,7 +225,7 @@ const PaginaCrearFactura = () => {
             generarPDF(
                 numFactura,
                 RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
-                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, subtotal, iva, totalGeneral
+                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, subtotal, iva, totalGeneral, regionDespacho, comunaDespacho, direccionDespacho, fechaDespacho
             );
     
             // Convertir productos a JSON
@@ -281,7 +281,7 @@ const PaginaCrearFactura = () => {
     
 
 const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEmpresa, telefonoEmpresa, correoEmpresa,
-    nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, regionDespacho, comunaDespacho ,direccionDespacho, fechaDespacho) => {
+    nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente,subtotal,iva,totalGeneral, regionDespacho, comunaDespacho ,direccionDespacho, fechaDespacho) => {
         const doc = new jsPDF();
 
         // Título
@@ -315,6 +315,9 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
         doc.text(`Dirección: ${direccionCliente}`, 14, 92);
         doc.text(`Teléfono: ${telefonoCliente}`, 14, 98);
         doc.text(`Correo: ${correoCliente}`, 14, 104);
+        
+
+        
 
     
 
@@ -326,10 +329,11 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
     
 
     // Encabezado de la tabla
+    // Encabezado de la tabla de productos
     const tableColumn = ["Nombre del Producto", "Cantidad", "Precio Unitario", "Total por Producto"];
     const tableRows = [];
 
-    // Datos de la tabla
+    // Datos de la tabla de productos
     productos.forEach(producto => {
         const precio = parseFloat(producto.precio) || 0;
         const total = parseFloat(producto.total) || 0;
@@ -342,17 +346,21 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
         tableRows.push(productoData);
     });
 
+    // Generar la tabla de productos
+    const startYProductos = 112;
+    const marginTable = 10;
+    const pageHeight = doc.internal.pageSize.height;
+    const maxYProductos = pageHeight - marginTable - (tableRows.length * 10);
     doc.autoTable({
         head: [tableColumn],
         body: tableRows,
-        startY: 112,
+        startY: startYProductos,
+        margin: { top: marginTable },
         theme: 'grid',
     });
 
-    // Obtener la posición final de la tabla
-    const finalY = doc.autoTable.previous.finalY;
-
     // Información de la factura
+    const startYFacturaInfo = doc.autoTable.previous.finalY + marginTable;
     const invoiceInfoColumns = ["", ""];
     const invoiceInfoRows = [
         ["Fecha", new Date().toLocaleDateString()],
@@ -361,17 +369,29 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
         ["Total General", new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(totalGeneral)],
     ];
 
+    // Generar la información de la factura
     doc.autoTable({
         head: [invoiceInfoColumns],
         body: invoiceInfoRows,
-        startY: finalY + 10,
+        startY: startYFacturaInfo,
+        margin: { top: marginTable },
         theme: 'plain',
-        styles: { halign: 'center' }, // Alineación horizontal del texto
+        styles: { halign: 'center' },
     });
 
-    
+    // Información de despacho
+    const despachoText = `Datos de despacho:
+    Región: ${regionDespacho}
+    Comuna: ${comunaDespacho}
+    Dirección: ${direccionDespacho}
+    Fecha de entrega estimada: ${new Date(fechaDespacho).toLocaleDateString()}`;
 
-    
+    // Calcular la altura necesaria para el texto de despacho
+    const splitDespachoText = doc.splitTextToSize(despachoText, 100);
+    const despachoTextHeight = splitDespachoText.length * 5;
+
+    // Imprimir la información de despacho al final del documento
+    doc.text(splitDespachoText, 14, pageHeight - marginTable - despachoTextHeight);
 
     // Guardar el PDF
     doc.save('factura.pdf');

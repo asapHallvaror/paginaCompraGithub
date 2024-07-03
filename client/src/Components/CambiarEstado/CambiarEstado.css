@@ -1,0 +1,12 @@
+.tituloCam{
+    text-align: center;
+    margin-top: 50px;
+}
+
+.botoncito{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 50px;
+}
