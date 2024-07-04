@@ -294,7 +294,7 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
     
         // Subtítulo
         doc.setFontSize(14);
-        doc.text('Datos proovedor', 14, 33);
+        doc.text('Datos proveedor', 14, 33);
     
         // Información de la empresa
         doc.setFontSize(12);
@@ -421,7 +421,7 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                         </tr>
                     </tbody>
                 </table>
-                <h3 style={{textAlign: 'center', marginTop: '30px'}}>Datos empresa proovedora</h3>
+                <h3 style={{textAlign: 'center', marginTop: '30px'}}>Datos empresa proveedora</h3>
                 <table>
                     <thead>
                         <th>Rut empresa*</th>
