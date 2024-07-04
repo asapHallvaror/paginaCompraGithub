@@ -173,18 +173,18 @@ const CambiarEstado = () => {
                         {estadoEntrega === 'rechazada' && (
                             <label className='tituloCam'>
                                 Motivo de Rechazo:
-                                <textarea style={{ marginLeft: '20px' }} value={motivoRechazo} onChange={handleMotivoRechazoChange}></textarea>
+                                <textarea style={{ marginLeft: '20px' }} required minLength = '5' maxLength = '400' value={motivoRechazo} onChange={handleMotivoRechazoChange}></textarea>
                             </label>
                         )}
                         {estadoEntrega === 'entregada' && (
                             <div>
                                 <label className='tituloCam'>
                                     Dirección de Entrega:
-                                    <input style={{ marginLeft: '20px' }} type="text" value={direccionEntrega} onChange={handleDireccionEntregaChange} />
+                                    <input style={{ marginLeft: '20px' }} required minLength = '5' maxLength = '100' type="text" value={direccionEntrega} onChange={handleDireccionEntregaChange} />
                                 </label>
                                 <label className='tituloCam'>
                                     Rut de Persona que Recibe:
-                                    <input style={{ marginLeft: '20px' }} type="text" value={rutPersonaRecibe} onChange={handleRutPersonaRecibeChange} />
+                                    <input style={{ marginLeft: '20px' }} required minLength = '9' maxLength = '10' type="text" value={rutPersonaRecibe} onChange={handleRutPersonaRecibeChange} />
                                 </label>
                                 <label className='tituloCam'>
                                     Evidencia de Entrega:
@@ -195,7 +195,7 @@ const CambiarEstado = () => {
                                     <div class="text">
                                     <span>{nombreArchivo}</span>
                                     </div>
-                                    <input type="file" id="file" onChange={handleEvidenciaEntregaChange}/>
+                                    <input type="file" id="file" required onChange={handleEvidenciaEntregaChange}/>
                                     
                                     </label>
 
