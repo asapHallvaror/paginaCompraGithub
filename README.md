@@ -15,21 +15,22 @@
   <h1>Instalación</h1>
   <p>1. Descargar o clonar el repositorio.</p>
   <p>2. Descomprimirlo y abrir la carpeta.</p>
-  <p>3. Ingresar a la carpeta client, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
-  <p>4. Ingresar a la carpeta server, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
+  <p>3. Se necesita tener descargado 'Node Js', en caso de no tenerlo, descargarlo de la página</p>
+  <p>4. Ingresar a la carpeta client, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
+  <p>5. Ingresar a la carpeta server, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
   <h3>Ahora hay que hacer la base de datos :O</h3>
-  <p>5. Abrir el archivo contenido en la carpeta server llamado 'yzymusicMYSQL.sql'</p>
-  <p>6. Copiar todo el contenido</p>
-  <p>7. Abrir LARAGON (si no lo tiene instalado, busque 'Laragon' en su navegador, descargue el instalador e instale el programa)</p>
-  <p>8. Presionar el botón "Iniciar todo"</p>
-  <p>9. Presionar el botón "Base de Datos"</p>
-  <p>10. Presionar botón "Abrir"</p>
-  <p>10. Ahora, debe dirigirse a donde dice "Laragon.MySQL", darle click derecho, dirigirse a "Crear nuevo" y clickear en "Base de datos"</p>
-  <p>12. En el campo "Nombre", debe ingresar "yzymusic"</p>
-  <p>13. Clickear boton "Aceptar"</p>
-  <p>14. Debe hacer click a su base de datos recién creada y dirigirse a la pestaña "Consulta"</p>
-  <p>15. Pegue todo el código que copió del archivo 'yzymusicMYSQL.sql'</p>
-  <p>16. Presione f9</p>
+  <p>6. Abrir el archivo contenido en la carpeta server llamado 'yzymusicMYSQL.sql'</p>
+  <p>7. Copiar todo el contenido</p>
+  <p>8. Abrir LARAGON (si no lo tiene instalado, busque 'Laragon' en su navegador, descargue el instalador e instale el programa)</p>
+  <p>9. Presionar el botón "Iniciar todo"</p>
+  <p>10. Presionar el botón "Base de Datos"</p>
+  <p>11. Presionar botón "Abrir"</p>
+  <p>12. Ahora, debe dirigirse a donde dice "Laragon.MySQL", darle click derecho, dirigirse a "Crear nuevo" y clickear en "Base de datos"</p>
+  <p>13. En el campo "Nombre", debe ingresar "yzymusic"</p>
+  <p>14. Clickear boton "Aceptar"</p>
+  <p>15. Debe hacer click a su base de datos recién creada y dirigirse a la pestaña "Consulta"</p>
+  <p>16. Pegue todo el código que copió del archivo 'yzymusicMYSQL.sql'</p>
+  <p>17. Presione f9</p>
   <h3>Instrucciones para levantar la página</h3>
   <p>1. Dirijase a la carpeta server de la carpeta del repositorio y abra una terminal</p>
   <p>2. Ejecute el comando "node index.js" y deje la terminal abierta</p>
