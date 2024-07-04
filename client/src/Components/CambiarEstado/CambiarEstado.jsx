@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import './CambiarEstado.css';
-
 
 const CambiarEstado = () => {
     const { id } = useParams();
@@ -91,13 +90,13 @@ const CambiarEstado = () => {
             if (evidenciaEntrega) {
                 formData.append('foto_evidencia', evidenciaEntrega);
             }
-    
+
             const response = await axios.put(`http://localhost:3001/api/factura/estado/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-    
+
             console.log('Estado de entrega actualizado:', response.data);
             setMensaje('Estado de entrega actualizado correctamente');
             setError('');
@@ -107,11 +106,10 @@ const CambiarEstado = () => {
             setMensaje('');
         }
     };
-    
 
     return (
         <div>
-            <h1 className='tituloCam'>Cambiar estado de la factura N° {factura && factura.numero_orden}</h1>
+            <h1 className='tituloCam'>Cambiar estado de despacho de la factura N° {factura && factura.numero_orden}</h1>
             {error && <div className="error">{error}</div>}
             {mensaje && <div className="success">{mensaje}</div>}
             {factura ? (
@@ -128,6 +126,26 @@ const CambiarEstado = () => {
                             </tr>
                         </tbody>
                     </table>
+                    <h2 className='tituloCam'>Detalles actuales del despacho</h2>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><label>Región</label></td>
+                                <td><input type="text" name='regionDespacho' value={factura.regionDespacho} disabled/></td>
+                                <td><label>Comuna</label></td>
+                                <td><input type="text" name='comunaDespacho' value={factura.comunaDespacho} disabled/></td>
+                                <td><label>Dirección</label></td>
+                                <td><input type="text" name='direccionDespacho' value={factura.direccionDespacho} disabled/></td>
+                            </tr>
+                            <tr>
+                                <td><label>Fecha estimada de despacho</label></td>
+                                <td><input type="text" name='fechaDespacho' value={formatDate(factura.fechaDespacho)} disabled/></td>
+                                <td><label>Estado de despacho</label></td>
+                                <td><input type="text" name='estado_entrega' value={factura.estado_entrega} disabled/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
 
                     <div className='actualizar-container'>
                         <h2 className='tituloCam'>Actualizar Estado de Entrega</h2>
@@ -164,6 +182,11 @@ const CambiarEstado = () => {
                         )}
                         <button className='botoncito' onClick={handleSubmit}>Actualizar Estado</button>
                     </div>
+
+                    {/* Agrega un enlace para ver el historial de cambios */}
+                    <Link to={`/historialcambios/${factura.numero_orden}`} className="ver-historial">
+                        Ver Historial de Cambios
+                    </Link>
                 </div>
             ) : (
                 <div>Cargando...</div>

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './RectificarFactura.css';
 import Swal from 'sweetalert2';
 
+
 const EditarFactura = () => {
     const { id } = useParams();
     const navigate = useNavigate();

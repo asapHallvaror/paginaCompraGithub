@@ -247,6 +247,38 @@ app.get('/api/factura/historial/:id', (req, res) => {
     });
 });
 
+// Ruta para obtener la imagen de evidencia de entrega por ID de factura si el estado es entregado
+app.get('/api/factura/evidencia/:id', (req, res) => {
+    const numero_orden = req.params.id;
+    
+    // Consulta para obtener la factura y verificar su estado de entrega
+    const query = 'SELECT foto_evidencia, estado_entrega FROM facturas WHERE numero_orden = ?';
+    db.query(query, [numero_orden], (err, result) => {
+        if (err) {
+            console.error('Error al obtener la imagen de evidencia:', err.message);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+        
+        if (result.length === 0) {
+            res.status(404).send({ error: 'Factura no encontrada' });
+            return;
+        }
+        
+        const factura = result[0];
+        const { foto_evidencia, estado_entrega } = factura;
+
+        // Verificar si la factura está entregada para mostrar la imagen de evidencia
+        if (estado_entrega === 'entregada' && foto_evidencia) {
+            const rutaFoto = path.resolve(__dirname, '..', 'client', 'src', 'Components', 'Assets', foto_evidencia);
+            res.sendFile(rutaFoto);
+        } else {
+            res.status(404).send({ error: 'No hay evidencia de entrega disponible para esta factura' });
+        }
+    });
+});
+
+
 
 // Ruta para subir el archivo PDF y asociarlo con el numero_orden
 app.post('/upload', upload.single('pdf'), (req, res) => {

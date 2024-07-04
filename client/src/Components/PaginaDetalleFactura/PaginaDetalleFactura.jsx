@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import './PaginaDetalleFactura.css';
+import fotodos from '../Assets/foto_evidencia-1720052993609-724889080.jpg'
 
 const PaginaDetFac = () => {
     const { id } = useParams();
     const [factura, setFactura] = useState(null);
 
+
     
+
     useEffect(() => {
         const fetchFactura = async () => {
             try {
@@ -30,13 +33,22 @@ const PaginaDetFac = () => {
         }
     }, [id]);
     
-
     if (!factura) {
         return <div>Cargando...</div>;
     }
 
+    const handleClick = () => {
+        const url = `http://localhost:3001/api/factura/evidencia/${factura.numero_orden}`;
+        window.open(url, '_blank'); // Abre la URL en una nueva pestaña
+      };
+
     
-    
+
+    const baseUrl = '../Assets/'; // Ajusta según la estructura real de tu proyecto
+    const imagenEvidencia = `${baseUrl}${factura.foto_evidencia}`;
+    console.log(imagenEvidencia);
+
+    const imgdos = '../Assets/foto_evidencia-1720052993609-724889080.jpg'
 
     const productos = Array.isArray(factura.productos) ? factura.productos : [];
 
@@ -168,9 +180,38 @@ const PaginaDetFac = () => {
                         <th>Estado del despacho:</th>
                         <td>{factura.estado_entrega}</td>
                     </tr>
+
+                    {/* Condicional para mostrar la razón de rechazo si el estado de entrega es 'rechazada' */}
+                    {factura.estado_entrega === 'rechazada' && (
+                        <tr>
+                            <th>Razón de Rechazo:</th>
+                            <td>{factura.motivo_rechazo}</td>
+                            
+                        </tr>
+                    )}
+
+                    {factura.estado_entrega === 'entregada' && (
+                        <>
+                            <tr>
+                                <th>Dirección de Entrega:</th>
+                                <td>{factura.direccion_entrega}</td>
+                            </tr>
+                            <tr>
+                                <th>Rut de Persona que Recibió:</th>
+                                <td>{factura.rut_receptor}</td>
+                            </tr>
+                            
+                            <tr>
+                                <th>Imagen:</th>
+                                
+                                <button onClick={handleClick}>Ver imagen</button>
+                                
+                            </tr>
+                                
+                        </>
+                    )}
                 </tbody>
             </table>
-            
 
             <h2>Montos</h2>
             <table>
