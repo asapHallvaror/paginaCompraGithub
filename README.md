@@ -21,7 +21,7 @@
   <h3>Ahora hay que hacer la base de datos :O</h3>
   <p>6. Abrir el archivo contenido en la carpeta server llamado 'yzymusicMYSQL.sql'</p>
   <p>7. Copiar todo el contenido</p>
-  <p>8. Abrir LARAGON (si no lo tiene instalado, busque 'Laragon' en su navegador, descargue el instalador e instale el programa)</p>
+  <p>8. Abrir LARAGON (si no lo tiene instalado, busque 'Laragon' en su navegador, descargue el instalador de la versión full (la de 173mb) e instale el programa)</p>
   <p>9. Presionar el botón "Iniciar todo"</p>
   <p>10. Presionar el botón "Base de Datos"</p>
   <p>11. Presionar botón "Abrir"</p>
