@@ -184,31 +184,31 @@ app.put('/api/factura/estado/:id', upload.single('foto_evidencia'), (req, res) =
 
     console.log('Datos recibidos:', req.body); // Verificar los datos recibidos
 
-    // Objeto con datos para actualizar el estado de entrega en facturas
+    if (!estado_entrega) {
+        return res.status(400).send({ error: 'El estado de entrega es requerido' });
+    }
+
     const updatedEstadoEntrega = {
         estado_entrega: estado_entrega,
-        motivo_rechazo: motivo_rechazo, // Asegúrate de incluir motivo_rechazo aquí
-        direccion_entrega: direccion_entrega,
-        rut_receptor: rut_receptor,
+        motivo_rechazo: motivo_rechazo || null, // Asegúrate de manejar motivo_rechazo correctamente
+        direccion_entrega: direccion_entrega || null,
+        rut_receptor: rut_receptor || null,
         foto_evidencia: foto_evidencia
     };
 
-    // Generar la consulta de actualización para el estado de entrega en facturas
     const updateQuery = 'UPDATE facturas SET ? WHERE numero_orden = ?';
     db.query(updateQuery, [updatedEstadoEntrega, numero_orden], (err, result) => {
         if (err) {
             console.error('Error al actualizar el estado de entrega en facturas:', err.message);
-            res.status(500).send({ error: 'Database query error', message: err.message });
-            return;
+            return res.status(500).send({ error: 'Database query error', message: err.message });
         }
         if (result.affectedRows > 0) {
-            // Registro en historial_facturas
             const historialData = {
                 numero_orden,
                 estado_nuevo: estado_entrega,
-                motivo_rechazo: motivo_rechazo, // Asegúrate de incluir motivo_rechazo aquí
-                direccion_entrega: direccion_entrega,
-                rut_receptor: rut_receptor,
+                motivo_rechazo: motivo_rechazo || null,
+                direccion_entrega: direccion_entrega || null,
+                rut_receptor: rut_receptor || null,
                 foto_evidencia: foto_evidencia,
                 fecha_cambio: new Date()
             };
@@ -217,14 +217,15 @@ app.put('/api/factura/estado/:id', upload.single('foto_evidencia'), (req, res) =
             db.query(insertQuery, historialData, (err, result) => {
                 if (err) {
                     console.error('Error al registrar en historial_facturas:', err.message);
-                    res.status(500).send({ error: 'Database query error', message: err.message });
-                    return;
+                    return res.status(500).send({ error: 'Database query error', message: err.message });
                 }
                 console.log('Estado de entrega actualizado y registrado en historial_facturas');
                 res.send({ success: true, message: 'Estado de entrega actualizado y registrado en historial' });
 
-                const rutaFoto = path.resolve(__dirname, 'client', 'src', 'Components', 'Assets', foto_evidencia);
-                console.log('Ruta de la foto guardada:', rutaFoto);
+                if (foto_evidencia) {
+                    const rutaFoto = path.resolve(__dirname, 'client', 'src', 'Components', 'Assets', foto_evidencia);
+                    console.log('Ruta de la foto guardada:', rutaFoto);
+                }
             });
         } else {
             res.status(404).send({ error: 'Factura no encontrada' });

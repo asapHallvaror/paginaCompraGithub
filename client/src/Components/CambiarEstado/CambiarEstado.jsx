@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import './CambiarEstado.css';
 
 const CambiarEstado = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [factura, setFactura] = useState(null);
     const [estadoEntrega, setEstadoEntrega] = useState('');
     const [motivoRechazo, setMotivoRechazo] = useState('');
@@ -12,6 +14,7 @@ const CambiarEstado = () => {
     const [rutPersonaRecibe, setRutPersonaRecibe] = useState('');
     const [evidenciaEntrega, setEvidenciaEntrega] = useState(null);
     const [nombreArchivo, setNombreArchivo] = useState('Haz click para agregar la evidencia');
+    
 
 
 
@@ -87,6 +90,7 @@ const CambiarEstado = () => {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const formData = new FormData();
             formData.append('estado_entrega', estadoEntrega);
@@ -104,12 +108,16 @@ const CambiarEstado = () => {
             });
 
             console.log('Estado de entrega actualizado:', response.data);
-            setMensaje('Estado de entrega actualizado correctamente');
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: 'Estado de entrega actualizado correctamente',
+            });
             setError('');
+            navigate('/home');
         } catch (error) {
             console.error('Error al actualizar el estado de entrega:', error.message, error.response?.data);
             setError('Error al actualizar el estado de entrega');
-            setMensaje('');
         }
     };
 
@@ -123,7 +131,6 @@ const CambiarEstado = () => {
             </Link>
             <h1 className='tituloCam'>Cambiar estado de despacho de la factura N° {factura && factura.numero_orden}</h1>
             {error && <div className="error">{error}</div>}
-            {mensaje && <div className="success">{mensaje}</div>}
             {factura ? (
                 <div>
                     <table className="factura-table">
