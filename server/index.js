@@ -84,20 +84,7 @@ app.get('/api/factura/:id', (req, res) => {
     });
 });
 
-app.get('/api/next-invoice-number', (req, res) => {
-    const query = `SELECT AUTO_INCREMENT as nextInvoiceNumber
-                   FROM information_schema.TABLES
-                   WHERE TABLE_SCHEMA = 'yzymusic' AND TABLE_NAME = 'facturas'`;
 
-    db.query(query, (err, result) => {
-        if (err) {
-            console.error('Error al obtener el próximo número de factura:', err);
-            res.status(500).send({ error: 'Database query error', message: err.message });
-            return;
-        }
-        res.send({ nextInvoiceNumber: result[0].nextInvoiceNumber });
-    });
-});
 
 // Ruta para el login
 app.post('/api/login', (req, res) => {
@@ -129,7 +116,10 @@ app.post('/api/facturas', (req, res) => {
             res.status(500).send({ error: 'Database query error', message: err.message });
             return;
         }
-        console.log('Factura insertada correctamente');
+
+        const numeroOrden = result.insertId; // Obtener el número de orden generado
+
+        console.log('Factura insertada correctamente con el número de orden:', numeroOrden);
         res.send({ success: true, numero_orden: result.insertId });
     });
 });

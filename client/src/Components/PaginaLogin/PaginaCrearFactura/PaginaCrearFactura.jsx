@@ -15,6 +15,31 @@ import Swal from 'sweetalert2';
 
 
 const PaginaCrearFactura = () => {
+
+    const regionesYComunas = {
+        "Región de Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
+        "Región de Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"],
+        "Región de Antofagasta": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"],
+        "Región de Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"],
+        "Región de Coquimbo": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"],
+        "Región de Valparaíso": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Puchuncaví", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Rinconada", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Panquehue", "Putaendo", "Santa María", "Quilpué", "Limache", "Olmué", "Villa Alemana"],
+        "Región del Libertador General Bernardo O'Higgins": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"],
+        "Región del Maule": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"],
+        "Región de Ñuble": ["Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"],
+        "Región del Biobío": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"],
+        "Región de La Araucanía": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre Las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"],
+        "Región de Los Ríos": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"],
+        "Región de Los Lagos": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"],
+        "Región de Aysén del General Carlos Ibáñez del Campo": ["Coyhaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"],
+        "Región de Magallanes y de la Antártica Chilena": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"],
+        "Región Metropolitana de Santiago": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Santiago", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+      };
+      
+
+
+
+
+
     const [productos, setProductos] = useState([{ nombre: '', cantidad: 0, precio: 0, total: 0 }]);
     const [subtotal, setSubtotal] = useState(0);
     const [iva, setIVA] = useState(0);
@@ -36,11 +61,15 @@ const PaginaCrearFactura = () => {
     const [telefonoCliente, setTelefonoCliente] = useState('');
     const [correoCliente, setCorreoCliente] = useState('');
     
-    const [regionDespacho, setRegionDespacho] = useState('');
-    const [comunaDespacho, setComunaDespacho] = useState('');
+    const [regionSeleccionada, setRegionSeleccionada] = useState('');
+    const [comunaSeleccionada, setComunaSeleccionada] = useState('');
+
     const [direccionDespacho, setDireccionDespacho] = useState('');
     const [usarDireccionCliente, setUsarDireccionCliente] = useState(false);
 
+    //Manejador de errores de las regiones y comunas
+    const [errorRegion, setErrorRegion] = useState('');
+    const [errorComuna, setErrorComuna] = useState('');
 
 
     // Manejadores de eventos para los inputs del cliente
@@ -51,8 +80,22 @@ const PaginaCrearFactura = () => {
     const handleDireccionChange = (e) => setDireccionCliente(e.target.value);
     const handleTelefonoChange = (e) => setTelefonoCliente(e.target.value);
     const handleCorreoChange = (e) => setCorreoCliente(e.target.value);
-    const handleRegionChange = (e) => setRegionDespacho(e.target.value);
-    const handleComunaChange = (e) => setComunaDespacho(e.target.value);
+    const handleRegionChange = (event) => {
+        const valor = event.target.value;
+        setRegionSeleccionada(valor);
+        setComunaSeleccionada(''); // Resetear comuna al cambiar la región
+        //Aquí se establece el mensaje de error si no se selecciona una región
+        setErrorRegion(valor ? '' : 'Debes seleccionar una región');
+        //Resetea y limpia el mensaje de error de la comuna
+        setErrorComuna('');
+      };
+    
+      const handleComunaChange = (event) => {
+        const valor = event.target.value;
+        setComunaSeleccionada(valor);
+        //Aquí se establece el mensaje de error si no se selecciona una comuna
+        setErrorComuna(valor ? '' : 'Debes seleccionar una comuna');
+      };
     const handleDireccionDespachoChange = (e) => setDireccionDespacho(e.target.value);
     const handleFechaOrdenChange = (e) => setFechaOrden(e.target.value);
     const handleFechaDespachoChange = (e) => setFechaDespacho(e.target.value);
@@ -95,26 +138,11 @@ const PaginaCrearFactura = () => {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (!isLoggedIn) {
             handleLogout(); // Redirigir si no está autenticado
-        } else {
-            obtenerSiguienteNumeroFactura(); // Obtener el número de factura si está autenticado
         }
     }, []);
 
 
-    const obtenerSiguienteNumeroFactura = async () => {
-        try {
-            const response = await axios.get('http://localhost:3001/api/next-order-number');
-            console.log(response.data); // Asegúrate de que este log muestra el valor esperado
-            const nextOrderNumber = response.data.nextOrderNumber;
-            if (nextOrderNumber) {
-                setNumFactura(nextOrderNumber); // Asegúrate de que nextOrderNumber no es undefined o null
-            } else {
-                console.error('El número de orden siguiente recibido es undefined o null.');
-            }
-        } catch (error) {
-            console.error('Error al obtener el siguiente número de orden:', error);
-        }
-    };
+    
     
 
     const handleInputChange = (index, event) => {
@@ -225,7 +253,7 @@ const PaginaCrearFactura = () => {
             generarPDF(
                 numFactura,
                 RAZON_SOCIAL, RUT, DIRECCION, TELEFONO, CORREO,
-                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, subtotal, iva, totalGeneral, regionDespacho, comunaDespacho, direccionDespacho, fechaDespacho
+                nombreCliente, rutCliente, direccionCliente, telefonoCliente, correoCliente, subtotal, iva, totalGeneral, regionSeleccionada, comunaSeleccionada, direccionDespacho, fechaDespacho
             );
     
             // Convertir productos a JSON
@@ -253,8 +281,8 @@ const PaginaCrearFactura = () => {
                 iva: iva,
                 total: totalGeneral,
                 productos: productosJSON, // Enviar productos como cadena JSON
-                regionDespacho: regionDespacho,
-                comunaDespacho: comunaDespacho,
+                regionDespacho: regionSeleccionada,
+                comunaDespacho: comunaSeleccionada,
                 direccionDespacho: direccionDespacho,
                 fechaDespacho: fechaDespacho
                 
@@ -534,28 +562,21 @@ const generarPDF = async (numFactura,razonSocialEmpresa, rutEmpresa, direccionEm
                     <tbody>
                         <tr>
                             <td>
-                                <input 
-                                    type="text"
-                                    name="regionDespacho"
-                                    placeholder='Ingresa la región'
-                                    required
-                                    value={regionDespacho}
-                                    onChange={handleRegionChange}
-                                    minLength="5"
-                                    maxLength="80"
-                                />
+                                <select required id="region" value={regionSeleccionada} onChange={handleRegionChange} className='comboregioncomuna'>
+                                    <option value="">Seleccionar una región</option>
+                                    {Object.keys(regionesYComunas).map((region) => (
+                                        <option key={region} value={region}>{region}</option>
+                                    ))}
+                                </select>
                             </td>
                             <td>
-                                <input 
-                                    type="text"
-                                    name="comunaDespacho"
-                                    placeholder='Ingresa la comuna'
-                                    required
-                                    value={comunaDespacho}
-                                    onChange={handleComunaChange}
-                                    minLength="3"
-                                    maxLength="80"
-                                />
+                                <select required id="comuna" value={comunaSeleccionada} onChange={handleComunaChange} disabled={!regionSeleccionada} className='comboregioncomuna'>
+                                    <option value="">Selecciona una comuna</option>
+                                    {regionSeleccionada &&
+                                        regionesYComunas[regionSeleccionada].map((comuna) => (
+                                        <option key={comuna} value={comuna}>{comuna}</option>
+                                        ))}
+                                </select>
                             </td>
                             <td>
                                 <input 

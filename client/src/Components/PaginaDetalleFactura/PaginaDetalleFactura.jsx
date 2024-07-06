@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import './PaginaDetalleFactura.css';
-import fotodos from '../Assets/foto_evidencia-1720052993609-724889080.jpg'
 
 const PaginaDetFac = () => {
     const { id } = useParams();

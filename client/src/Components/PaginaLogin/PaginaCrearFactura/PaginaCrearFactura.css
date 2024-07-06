@@ -229,3 +229,8 @@ h2 {
 .btn-rectificar:hover::before{
     width: 100%;
 }
+
+.comboregioncomuna{
+    height: 33px;
+    border-radius: 10px;
+}
