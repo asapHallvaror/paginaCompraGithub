@@ -30,4 +30,15 @@
     width: 400px; /* Ajusta este valor según tus necesidades */
 }
 
+.filtro-container{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
 
+.filtro-container button{
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 50px;
+    cursor: pointer;
+}

@@ -58,8 +58,8 @@ tbody input[type="email"] {
     margin: 40px auto;
     width: 110px;
     height: 50px;
-    font-size: 18px;
-    border-radius: 50px;
+    font-size: 15px;
+    border-radius: 10px;
     transition: 0.5s;
     cursor: pointer;
 }

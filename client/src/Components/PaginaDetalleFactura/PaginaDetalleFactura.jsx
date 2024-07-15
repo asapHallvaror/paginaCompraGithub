@@ -351,10 +351,11 @@ const PaginaDetFac = () => {
             </table>
             <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={generarPDF}>Descargar pdf</button>
             <Link to={`/rectificar/${id}`}>
-                <button className='btn-rectificar'>
+                <button className='btn-rectificar' style={{marginBottom: '50px'}}>
                     Hacer rectificaciones
                 </button>
             </Link>
+            <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={generarPDF}>Anular factura</button>
             
         </div>
     );

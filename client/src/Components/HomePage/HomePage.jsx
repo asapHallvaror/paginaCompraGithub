@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext'
 
 const HomePage = () => {
-  
     const userData = JSON.parse(localStorage.getItem('user'));
     const auth = useAuth();
     const [facturas, setFacturas] = useState([]);
+    const [filtro, setFiltro] = useState('todas');
 
     useEffect(() => {
         const obtenerFacturas = async () => {
@@ -21,8 +21,7 @@ const HomePage = () => {
 
     const handleLogout = () => {
         auth.signout(() => {
-          // Redirige al usuario después de cerrar sesión
-          window.location.href = '/'; // Por ejemplo, redirige a la página de inicio
+          window.location.href = '/'; // Redirige a la página de inicio
         });
     };
 
@@ -38,6 +37,12 @@ const HomePage = () => {
     }
 
     const fechaCapitalized = fecha.split(' ').map(capitalizeFirstLetter).join(' ');
+
+    const filtrarFacturas = (estado) => {
+        setFiltro(estado);
+    };
+
+    const facturasFiltradas = filtro === 'todas' ? facturas : facturas.filter(factura => factura.estado_factura === filtro);
 
     return (
         <div>
@@ -63,8 +68,14 @@ const HomePage = () => {
 
                 <div className="bottom-container">
                     <h2>Tus facturas</h2>
-                    {facturas.length === 0 ? (
-                        <p style={{ fontSize: '20px', textAlign: 'center' }}>No has creado ninguna factura <br />¡Puedes crear una nueva factura en el botón superior!</p>
+                    <div className="filtro-container">
+                        <button onClick={() => filtrarFacturas('todas')}>Todas</button>
+                        <button onClick={() => filtrarFacturas('creada')}>Creadas</button>
+                        <button onClick={() => filtrarFacturas('rectificada')}>Rectificadas</button>
+                        <button onClick={() => filtrarFacturas('anulada')}>Anuladas</button>
+                    </div>
+                    {facturasFiltradas.length === 0 ? (
+                        <p style={{ fontSize: '20px', textAlign: 'center' }}>No hay facturas para mostrar con el estado que escogiste</p>
                     ) : (
                         <table>
                             <thead>
@@ -72,13 +83,40 @@ const HomePage = () => {
                                     <th>Número de orden</th>
                                     <th>Fecha factura</th>
                                     <th>Ver detalle factura</th>
+                                    <th>Estado factura</th>
+                                    <th>Estado despacho</th>
                                     <th>Cambiar estado de despacho</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {facturas.map(factura => {
+                                {facturasFiltradas.map(factura => {
                                     const fechaOrden = new Date(factura.fecha_orden);
                                     const fechaOrdenChilena = fechaOrden.toLocaleDateString('es-CL');
+                                    
+                                    let estadoColor;
+                                    if (factura.estado_factura === 'creada') {
+                                        estadoColor = 'yellow';
+                                    } else if (factura.estado_factura === 'rectificada') {
+                                        estadoColor = 'orange';
+                                    } else {
+                                        estadoColor = 'transparent'; // Color por defecto si no coincide con los estados especificados
+                                    }
+                                    
+
+                                    let estadoEntregaColor;
+                                    let estadoEntregaTextColor = 'black'; // Color de texto por defecto
+                                    if (factura.estado_entrega === 'por entregar') {
+                                        estadoEntregaColor = 'purple';
+                                        estadoEntregaTextColor = 'white';
+                                    } else if (factura.estado_entrega === 'rechazada') {
+                                        estadoEntregaColor = 'red';
+                                        estadoEntregaTextColor = 'white';
+                                    } else if (factura.estado_entrega === 'entregada') {
+                                        estadoEntregaColor = 'green';
+                                        estadoEntregaTextColor = 'white';
+                                    } else {
+                                        estadoEntregaColor = 'transparent'; // Color por defecto si no coincide con los estados especificados
+                                    }
 
                                     return (
                                         <tr key={factura.numero_orden}>
@@ -92,6 +130,14 @@ const HomePage = () => {
                                                 <Link to={`/detalle/${factura.numero_orden}`}>
                                                     <button style={{marginLeft: '40px'}}>Ver detalle</button>
                                                 </Link>
+                                            </td>
+                                            <td>
+                                            <p style={{ backgroundColor: estadoColor, borderRadius: '100px', textAlign: 'center' }}>{factura.estado_factura}</p>
+                                            </td>
+                                            <td>
+                                                <p style={{ backgroundColor: estadoEntregaColor, color: estadoEntregaTextColor, borderRadius: '100px', textAlign: 'center' }}>
+                                                    {factura.estado_entrega}
+                                                </p>
                                             </td>
                                             <td>
                                                 <Link to={`/cambiarestado/${factura.numero_orden}`}>
