@@ -7,7 +7,41 @@
     background-color: #f9f9f9;
 }
 
-.botoncito-historial{
+.btn-volver-hist-container {
     display: flex;
-    margin: 0 auto;
+    justify-content: center;
+    margin-top: 20px; /* Ajusta según sea necesario */
+}
+
+.btn-volver-hist {
+    display: flex;
+    height: 3em;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: #eeeeee4b;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    transition: all 0.2s linear;
+    cursor: pointer;
+    border: none;
+    background: #fff;
+    border-radius: 50px;
+}
+
+.btn-volver-hist > svg {
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 20px;
+    transition: all 0.4s ease-in;
+}
+
+.btn-volver-hist > svg:hover {
+    font-size: 1.2em;
+    transform: translateX(-5px);
+}
+
+.btn-volver-hist:hover {
+    box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+    transform: translateY(-2px);
 }

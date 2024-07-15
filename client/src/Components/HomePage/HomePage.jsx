@@ -86,6 +86,7 @@ const HomePage = () => {
                                     <th>Estado factura</th>
                                     <th>Estado despacho</th>
                                     <th>Cambiar estado de despacho</th>
+                                    <th>Ver historial de cambios</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -140,9 +141,18 @@ const HomePage = () => {
                                                 </p>
                                             </td>
                                             <td>
+                                            {factura.estado_entrega === 'entregada' ? (
+                                                <p style={{fontSize: '15px', textAlign: 'center'}}>No se puede cambiar estado</p>
+                                            ) : (
                                                 <Link to={`/cambiarestado/${factura.numero_orden}`}>
                                                     <button style={{marginLeft: '50px'}}>Cambiar estado</button>
                                                 </Link>
+                                            )}
+                                            </td>
+                                            <td>
+                                                <Link to={`/historialcambios/${factura.numero_orden}`} className="ver-historial">
+                                                    <button style={{marginLeft: '50px'}}>Ver historial</button>
+                                                </Link>	
                                             </td>
                                         </tr>
                                     );
