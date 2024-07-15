@@ -95,11 +95,16 @@ const HomePage = () => {
                                     const fechaOrdenChilena = fechaOrden.toLocaleDateString('es-CL');
                                     
                                     let estadoColor;
+                                    let estadoFacturaTextColor
                                     if (factura.estado_factura === 'creada') {
                                         estadoColor = 'yellow';
                                     } else if (factura.estado_factura === 'rectificada') {
                                         estadoColor = 'orange';
-                                    } else {
+                                    } else if (factura.estado_factura === 'anulada') {
+                                        estadoColor = 'red';
+                                        estadoFacturaTextColor = 'white';
+                                    }
+                                     else {
                                         estadoColor = 'transparent'; // Color por defecto si no coincide con los estados especificados
                                     }
                                     
@@ -115,7 +120,11 @@ const HomePage = () => {
                                     } else if (factura.estado_entrega === 'entregada') {
                                         estadoEntregaColor = 'green';
                                         estadoEntregaTextColor = 'white';
-                                    } else {
+                                    } else if (factura.estado_entrega === 'N/A'){
+                                        estadoEntregaColor = 'red';
+                                        estadoEntregaTextColor = 'white';
+                                    }
+                                    else {
                                         estadoEntregaColor = 'transparent'; // Color por defecto si no coincide con los estados especificados
                                     }
 
@@ -133,15 +142,20 @@ const HomePage = () => {
                                                 </Link>
                                             </td>
                                             <td>
-                                            <p style={{ backgroundColor: estadoColor, borderRadius: '100px', textAlign: 'center' }}>{factura.estado_factura}</p>
+                                            <p style={{ backgroundColor: estadoColor, color: estadoFacturaTextColor ,borderRadius: '100px', textAlign: 'center' }}>{factura.estado_factura}</p>
                                             </td>
                                             <td>
-                                                <p style={{ backgroundColor: estadoEntregaColor, color: estadoEntregaTextColor, borderRadius: '100px', textAlign: 'center' }}>
+                                                {factura.estado_factura === 'anulada' ? (
+                                                    <p style={{fontSize: '15px', textAlign: 'center'}}>N/A</p>
+                                                ) : (
+                                                    <p style={{ backgroundColor: estadoEntregaColor, color: estadoEntregaTextColor, borderRadius: '100px', textAlign: 'center' }}>
                                                     {factura.estado_entrega}
-                                                </p>
+                                                    </p>
+                                                )}
+                                                
                                             </td>
                                             <td>
-                                            {factura.estado_entrega === 'entregada' ? (
+                                            {factura.estado_entrega === 'entregada' || factura.estado_factura === 'anulada' ? (
                                                 <p style={{fontSize: '15px', textAlign: 'center'}}>No se puede cambiar estado</p>
                                             ) : (
                                                 <Link to={`/cambiarestado/${factura.numero_orden}`}>

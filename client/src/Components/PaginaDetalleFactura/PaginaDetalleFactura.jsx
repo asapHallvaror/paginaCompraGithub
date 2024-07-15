@@ -1,13 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import Swal from 'sweetalert2';
 import './PaginaDetalleFactura.css';
 
 const PaginaDetFac = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [factura, setFactura] = useState(null);
+
+
+    const Anulacion = async (event) => {
+        event.preventDefault();
+    
+        // Mostrar alerta de confirmación
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Realmente quieres anular la factura?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar'
+        });
+    
+        if (result.isConfirmed) {
+            try {
+                // Cambiar el estado de la factura a "rectificada"
+                const updatedFacturaWithEstado = { estado_factura: 'anulada' };
+                const response = await axios.put(`http://localhost:3001/api/factura/anulacion/${id}`, updatedFacturaWithEstado);
+    
+                if (response.status === 200) {
+                    // Mostrar alerta de éxito
+                    await Swal.fire({
+                        title: 'Éxito',
+                        text: 'La factura ha sido anulada correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+    
+                    navigate('/home');
+                } else {
+                    throw new Error('Error al actualizar la factura');
+                }
+            } catch (error) {
+                console.error('Error al actualizar la factura:', error.message, error.response?.data);
+                await Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al anular la factura. Por favor, inténtalo de nuevo.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    };
+
+
 
 
     const generarPDF = async () => {
@@ -121,6 +172,18 @@ const PaginaDetFac = () => {
     
         // Imprimir la información de despacho al final del documento
         doc.text(splitDespachoText, 14, pageHeight - marginTable - despachoTextHeight);
+
+        // Agregar texto "Anulada" en diagonal si la factura está anulada
+        if (factura.estado_factura.toLowerCase() === 'anulada') {
+            doc.setTextColor('red');
+            doc.setFontSize(90);
+            doc.setGState(new doc.GState({ opacity: 0.2 }));
+            doc.text('Anulada', 40, 50);
+            doc.text('Anulada', 40, 120);
+            doc.text('Anulada', 40, 190);
+            doc.text('Anulada', 40, 260);
+            doc.setGState(new doc.GState({ opacity: 1 })); // Restablecer opacidad
+        }
     
         // Guardar el PDF
         doc.save('factura.pdf');
@@ -355,7 +418,7 @@ const PaginaDetFac = () => {
                     Hacer rectificaciones
                 </button>
             </Link>
-            <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={generarPDF}>Anular factura</button>
+            <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={Anulacion}>Anular factura</button>
             
         </div>
     );

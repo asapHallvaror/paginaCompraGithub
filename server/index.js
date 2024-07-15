@@ -149,6 +149,46 @@ app.put('/api/factura/:id', (req, res) => {
     });
 });
 
+// Ruta para marcar una factura como anulada y registrar en historial_facturas
+app.put('/api/factura/anulacion/:id', (req, res) => {
+    const numero_orden = req.params.id;
+    let updatedFactura = req.body;
+
+    // Establecer el estado de la factura a "anulada"
+    updatedFactura.estado_factura = 'anulada';
+
+    // Generar la consulta de actualización
+    const query = 'UPDATE facturas SET ? WHERE numero_orden = ?';
+
+    db.query(query, [updatedFactura, numero_orden], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar la factura:', err.message);
+            res.status(500).send({ error: 'Database query error', message: err.message });
+            return;
+        }
+
+        if (result.affectedRows > 0) {
+            const historialData = {
+                numero_orden,
+                estado_nuevo: 'anulada',
+                fecha_cambio: new Date()
+            };
+
+            const insertQuery = 'INSERT INTO historial_facturas SET ?';
+            db.query(insertQuery, historialData, (err, result) => {
+                if (err) {
+                    console.error('Error al registrar en historial_facturas:', err.message);
+                    return res.status(500).send({ error: 'Database query error', message: err.message });
+                }
+                console.log('Estado de factura anulada y registrado en historial_facturas');
+                res.send({ success: true, message: 'Factura anulada y registrado en historial' });
+            });
+        } else {
+            res.status(404).send({ error: 'Factura no encontrada' });
+        }
+    });
+});
+
 // Ruta para insertar un detalle de factura
 
 
