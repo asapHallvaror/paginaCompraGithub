@@ -150,21 +150,7 @@ app.put('/api/factura/:id', (req, res) => {
 });
 
 // Ruta para insertar un detalle de factura
-app.post('/api/detalles_facturas', (req, res) => {
-    const detalleFacturaData = req.body;
-    console.log('Received detalleFacturaData:', detalleFacturaData); // Log the received data
-    const query = 'INSERT INTO detalles_facturas SET ?';
 
-    db.query(query, detalleFacturaData, (err, result) => {
-        if (err) {
-            console.error('Error al insertar el detalle de la factura:', err.message);
-            res.status(500).send({ error: 'Database query error', message: err.message });
-            return;
-        }
-        console.log('Detalle de factura insertado correctamente');
-        res.send({ success: true, id: result.insertId });
-    });
-});
 
 // Ruta para actualizar el estado de entrega y registrar en historial_facturas
 app.put('/api/factura/estado/:id', upload.single('foto_evidencia'), (req, res) => {
