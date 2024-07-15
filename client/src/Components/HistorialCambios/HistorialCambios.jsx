@@ -32,9 +32,12 @@ const HistorialCambios = () => {
     <div className='historial-container'> 
       <h1 style={{textAlign: 'center'}}>Historial de Cambios de Factura N° {id}</h1>
       {historialCambios.length === 0 ? (
-                <p style={{textAlign: 'center'}}>No hay ningún cambio hasta ahora</p>
+                <p style={{textAlign: 'center', marginBottom: '50px', marginTop: '50px'}}>No hay ningún cambio hasta ahora</p>
       ) : (
+      
       <ul>
+      <p style={{textAlign: 'center', marginBottom: '40px'}}>Cantidad de cambios: {historialCambios.length}</p>
+
         {historialCambios.map((cambio, index) => (
           <li key={index}>
             <p style={{textAlign: 'center'}}>Fecha y hora de cambio: {
