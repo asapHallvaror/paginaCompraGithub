@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './HomePage.css';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../auth/AuthContext'
+import { useAuth } from '../../auth/AuthContext';
 
 const HomePage = () => {
     const userData = JSON.parse(localStorage.getItem('user'));
     const auth = useAuth();
     const [facturas, setFacturas] = useState([]);
-    const [filtro, setFiltro] = useState('todas');
+    const [filtroFactura, setFiltroFactura] = useState('todas'); // Estado de filtro por estado de factura
+    const [filtroEntrega, setFiltroEntrega] = useState('todas'); // Estado de filtro por estado de entrega
 
     useEffect(() => {
         const obtenerFacturas = async () => {
@@ -21,7 +22,7 @@ const HomePage = () => {
 
     const handleLogout = () => {
         auth.signout(() => {
-          window.location.href = '/'; // Redirige a la página de inicio
+            window.location.href = '/'; // Redirige a la página de inicio
         });
     };
 
@@ -34,15 +35,31 @@ const HomePage = () => {
 
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }
+    };
 
     const fechaCapitalized = fecha.split(' ').map(capitalizeFirstLetter).join(' ');
 
-    const filtrarFacturas = (estado) => {
-        setFiltro(estado);
+    const filtrarFacturas = (estado, tipo) => {
+        if (tipo === 'factura') {
+            setFiltroFactura(estado);
+        } else if (tipo === 'entrega') {
+            setFiltroEntrega(estado);
+        }
     };
 
-    const facturasFiltradas = filtro === 'todas' ? facturas : facturas.filter(factura => factura.estado_factura === filtro);
+    const contarFacturasPorEstado = (estado) => {
+        return facturas.filter(factura => factura.estado_factura === estado).length;
+    };
+
+    const contarFacturasPorEstadoEntrega = (estado) => {
+        return facturas.filter(factura => factura.estado_entrega === estado).length;
+    };
+
+    const facturasFiltradas = facturas.filter(factura => {
+        const filtroFacturaPass = filtroFactura === 'todas' || factura.estado_factura === filtroFactura;
+        const filtroEntregaPass = filtroEntrega === 'todas' || factura.estado_entrega === filtroEntrega;
+        return filtroFacturaPass && filtroEntregaPass;
+    });
 
     return (
         <div>
@@ -69,10 +86,18 @@ const HomePage = () => {
                 <div className="bottom-container">
                     <h2>Tus facturas</h2>
                     <div className="filtro-container">
-                        <button onClick={() => filtrarFacturas('todas')}>Todas</button>
-                        <button onClick={() => filtrarFacturas('creada')}>Creadas</button>
-                        <button onClick={() => filtrarFacturas('rectificada')}>Rectificadas</button>
-                        <button onClick={() => filtrarFacturas('anulada')}>Anuladas</button>
+                        <p style={{ marginTop: '12px', marginRight: '20px' }}>Filtrar por estado de factura:</p>
+                        <button onClick={() => filtrarFacturas('todas', 'factura')}>Todas ({facturas.length})</button>
+                        <button onClick={() => filtrarFacturas('creada', 'factura')}>Creadas ({contarFacturasPorEstado('creada')})</button>
+                        <button onClick={() => filtrarFacturas('rectificada', 'factura')}>Rectificadas ({contarFacturasPorEstado('rectificada')})</button>
+                        <button onClick={() => filtrarFacturas('anulada', 'factura')}>Anuladas ({contarFacturasPorEstado('anulada')})</button>
+                    </div>
+                    <div className="filtro-container">
+                        <p style={{ marginTop: '12px', marginRight: '20px' }}>Filtrar por estado de entrega:</p>
+                        <button onClick={() => filtrarFacturas('todas', 'entrega')}>Todas ({facturas.length})</button>
+                        <button onClick={() => filtrarFacturas('por entregar', 'entrega')}>Por Entregar ({contarFacturasPorEstadoEntrega('por entregar')})</button>
+                        <button onClick={() => filtrarFacturas('rechazada', 'entrega')}>Rechazadas ({contarFacturasPorEstadoEntrega('rechazada')})</button>
+                        <button onClick={() => filtrarFacturas('entregada', 'entrega')}>Entregadas ({contarFacturasPorEstadoEntrega('entregada')})</button>
                     </div>
                     {facturasFiltradas.length === 0 ? (
                         <p style={{ fontSize: '20px', textAlign: 'center' }}>No hay facturas para mostrar con el estado que escogiste</p>
@@ -93,9 +118,9 @@ const HomePage = () => {
                                 {facturasFiltradas.map(factura => {
                                     const fechaOrden = new Date(factura.fecha_orden);
                                     const fechaOrdenChilena = fechaOrden.toLocaleDateString('es-CL');
-                                    
+
                                     let estadoColor;
-                                    let estadoFacturaTextColor
+                                    let estadoFacturaTextColor;
                                     if (factura.estado_factura === 'creada') {
                                         estadoColor = 'yellow';
                                     } else if (factura.estado_factura === 'rectificada') {
@@ -103,11 +128,9 @@ const HomePage = () => {
                                     } else if (factura.estado_factura === 'anulada') {
                                         estadoColor = 'red';
                                         estadoFacturaTextColor = 'white';
-                                    }
-                                     else {
+                                    } else {
                                         estadoColor = 'transparent'; // Color por defecto si no coincide con los estados especificados
                                     }
-                                    
 
                                     let estadoEntregaColor;
                                     let estadoEntregaTextColor = 'black'; // Color de texto por defecto
@@ -120,11 +143,10 @@ const HomePage = () => {
                                     } else if (factura.estado_entrega === 'entregada') {
                                         estadoEntregaColor = 'green';
                                         estadoEntregaTextColor = 'white';
-                                    } else if (factura.estado_entrega === 'N/A'){
+                                    } else if (factura.estado_entrega === 'N/A') {
                                         estadoEntregaColor = 'red';
                                         estadoEntregaTextColor = 'white';
-                                    }
-                                    else {
+                                    } else {
                                         estadoEntregaColor = 'transparent'; // Color por defecto si no coincide con los estados especificados
                                     }
 
@@ -138,35 +160,35 @@ const HomePage = () => {
                                             </td>
                                             <td>
                                                 <Link to={`/detalle/${factura.numero_orden}`}>
-                                                    <button style={{marginLeft: '40px'}}>Ver detalle</button>
+                                                    <button style={{ marginLeft: '40px', borderRadius: '5px', cursor: 'pointer' }}>Ver detalle</button>
                                                 </Link>
                                             </td>
                                             <td>
-                                            <p style={{ backgroundColor: estadoColor, color: estadoFacturaTextColor ,borderRadius: '100px', textAlign: 'center' }}>{factura.estado_factura}</p>
+                                                <p style={{ backgroundColor: estadoColor, color: estadoFacturaTextColor, borderRadius: '100px', textAlign: 'center' }}>{factura.estado_factura}</p>
                                             </td>
                                             <td>
                                                 {factura.estado_factura === 'anulada' ? (
-                                                    <p style={{fontSize: '15px', textAlign: 'center'}}>N/A</p>
+                                                    <p style={{ fontSize: '15px', textAlign: 'center' }}>N/A</p>
                                                 ) : (
                                                     <p style={{ backgroundColor: estadoEntregaColor, color: estadoEntregaTextColor, borderRadius: '100px', textAlign: 'center' }}>
-                                                    {factura.estado_entrega}
+                                                        {factura.estado_entrega}
                                                     </p>
                                                 )}
-                                                
+
                                             </td>
                                             <td>
-                                            {factura.estado_entrega === 'entregada' || factura.estado_factura === 'anulada' ? (
-                                                <p style={{fontSize: '15px', textAlign: 'center'}}>No se puede cambiar estado</p>
-                                            ) : (
-                                                <Link to={`/cambiarestado/${factura.numero_orden}`}>
-                                                    <button style={{marginLeft: '50px'}}>Cambiar estado</button>
-                                                </Link>
-                                            )}
+                                                {factura.estado_entrega === 'entregada' || factura.estado_factura === 'anulada' ? (
+                                                    <p style={{ fontSize: '15px', textAlign: 'center' }}>No se puede cambiar estado</p>
+                                                ) : (
+                                                    <Link to={`/cambiarestado/${factura.numero_orden}`}>
+                                                        <button style={{ marginLeft: '50px', borderRadius: '5px', cursor: 'pointer'  }}>Cambiar estado</button>
+                                                    </Link>
+                                                )}
                                             </td>
                                             <td>
                                                 <Link to={`/historialcambios/${factura.numero_orden}`} className="ver-historial">
-                                                    <button style={{marginLeft: '50px'}}>Ver historial</button>
-                                                </Link>	
+                                                    <button style={{ marginLeft: '50px' }}>Ver historial</button>
+                                                </Link>
                                             </td>
                                         </tr>
                                     );
@@ -178,6 +200,6 @@ const HomePage = () => {
             </div>
         </div>
     );
-}
+};
 
 export default HomePage;

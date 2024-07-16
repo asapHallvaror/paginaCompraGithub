@@ -413,12 +413,19 @@ const PaginaDetFac = () => {
                 </tbody>
             </table>
             <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={generarPDF}>Descargar pdf</button>
-            <Link to={`/rectificar/${id}`}>
-                <button className='btn-rectificar' style={{marginBottom: '50px'}}>
-                    Hacer rectificaciones
-                </button>
-            </Link>
-            <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={Anulacion}>Anular factura</button>
+
+            {factura.estado_entrega && factura.estado_entrega.toLowerCase() !== 'entregada' && factura.estado_factura.toLowerCase() !== 'anulada' && (
+                <>
+                    <Link to={`/rectificar/${id}`}>
+                        <button className='btn-rectificar' style={{marginBottom: '50px'}}>
+                            Hacer rectificaciones
+                        </button>
+                    </Link>
+                    <button className='btn-rectificar' style={{marginBottom: '50px'}} onClick={Anulacion}>
+                        Anular factura
+                    </button>
+                </>
+            )}
             
         </div>
     );

@@ -71,6 +71,9 @@ const PaginaCrearFactura = () => {
     const [errorRegion, setErrorRegion] = useState('');
     const [errorComuna, setErrorComuna] = useState('');
 
+    const [errorFechaOrden, setErrorFechaOrden] = useState('');
+    const [errorFechaDespacho, setErrorFechaDespacho] = useState('');
+
 
     // Manejadores de eventos para los inputs del cliente
     const handleNumFactura = (e) => setNumFactura(e.target.value);
@@ -97,8 +100,61 @@ const PaginaCrearFactura = () => {
         setErrorComuna(valor ? '' : 'Debes seleccionar una comuna');
       };
     const handleDireccionDespachoChange = (e) => setDireccionDespacho(e.target.value);
-    const handleFechaOrdenChange = (e) => setFechaOrden(e.target.value);
-    const handleFechaDespachoChange = (e) => setFechaDespacho(e.target.value);
+    
+    const handleFechaOrdenChange = (e) => {
+        const nuevaFechaOrden = e.target.value;
+        setFechaOrden(nuevaFechaOrden);
+    };
+
+    const handleFechaOrdenBlur = () => {
+        const fechaIngresada = new Date(fechaOrden);
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // Asegurarse de que la fecha de hoy no tenga tiempo
+
+        if (fechaIngresada > hoy) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Fecha inválida',
+                text: 'La fecha de orden no puede ser una fecha futura.',
+            });
+            setFechaOrden('');
+        }
+    };
+
+    const handleFechaDespachoChange = (e) => {
+        const nuevaFechaDespacho = e.target.value;
+        const fechaIngresada = new Date(nuevaFechaDespacho);
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+    
+        if (fechaIngresada >= hoy) {
+            setFechaDespacho(nuevaFechaDespacho);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Fecha inválida',
+                text: 'La fecha de despacho no puede ser una fecha pasada.',
+            });
+            setFechaDespacho('');
+        }
+    };
+    
+
+    const handleFechaDespachoBlur = () => {
+        const fechaIngresada = new Date(fechaDespacho);
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // Asegurarse de que la fecha de hoy no tenga tiempo
+    
+        if (fechaIngresada < hoy) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Fecha inválida',
+                text: 'La fecha de despacho no puede ser una fecha pasada.',
+            });
+            setFechaDespacho('');
+        }
+    };
+    
 
     const handleSubtotalChange = (e) => setSubtotal(e.target.value);
     const handleIvaChange = (e) => setIVA(e.target.value);
@@ -291,7 +347,8 @@ const PaginaCrearFactura = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <input className='fecha-input' type="date" name='fechaOrden' required value={fechaOrden} onChange={handleFechaOrdenChange} />
+                            <input className='fecha-input' type="date" name='fechaOrden' required value={fechaOrden} onChange={handleFechaOrdenChange} onBlur={handleFechaOrdenBlur}/>
+                            {errorFechaOrden && <p style={{ color: 'red' }}>{errorFechaOrden}</p>}
                         </tr>
                     </tbody>
                 </table>
@@ -437,7 +494,8 @@ const PaginaCrearFactura = () => {
                                 />
                             </td>
                             <td>
-                                <input className='fecha-input' type="date" name='fechaDespacho' required value={fechaDespacho} onChange={handleFechaDespachoChange} />
+                                <input className='fecha-input' type="date" name='fechaDespacho' required value={fechaDespacho} onChange={handleFechaDespachoChange} onBlur={handleFechaDespachoBlur}/>
+                                {errorFechaDespacho && <p style={{ color: 'red' }}>{errorFechaDespacho}</p>}
                             </td>
                         </tr>
                     </tbody>
