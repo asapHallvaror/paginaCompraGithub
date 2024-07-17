@@ -168,7 +168,7 @@ const CambiarEstado = () => {
                             <tr>
                                 <td><label>Fecha estimada de despacho</label></td>
                                 <td><input type="text" name='fechaDespacho' value={formatDate(factura.fechaDespacho)} disabled/></td>
-                                <td><label>Estado de despacho</label></td>
+                                <td><label>Estado actual del despacho</label></td>
                                 <td><input type="text" name='estado_entrega' value={factura.estado_entrega} disabled/></td>
                             </tr>
                         </tbody>

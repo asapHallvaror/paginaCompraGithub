@@ -316,6 +316,7 @@ const PaginaCrearFactura = () => {
             }
             Swal.fire({
                 title: "Factura creada con éxito!",
+                icon: 'success',
                 text: "Serás redirigido a la página con los detalles de la factura",
             }).then(() => {
                 navigate(`/detalle/${numero_orden}`) // Usar numero_orden en lugar de numFactura

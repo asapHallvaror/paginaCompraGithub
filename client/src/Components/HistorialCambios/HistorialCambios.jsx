@@ -47,7 +47,10 @@ const HistorialCambios = () => {
                 hour12: false
               })
             }</p>
-            <p style={{textAlign: 'center', marginBottom: '50px'}}>Estado Nuevo: {cambio.estado_nuevo}</p>
+            <p style={{textAlign: 'center'}}>Estado Nuevo: {cambio.estado_nuevo}</p>
+            {cambio.estado_nuevo === 'rechazada' && (
+              <p style={{textAlign: 'center', marginBottom: '50px'}}>Motivo del rechazo: {cambio.motivo_rechazo}</p>
+            )}
             <hr />
           </li>
         ))}
