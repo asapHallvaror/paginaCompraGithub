@@ -17,7 +17,6 @@ const EditarFactura = () => {
             try {
                 const response = await axios.get(`http://localhost:3001/api/factura/${id}`);
                 const facturaData = response.data;
-                facturaData.productos = JSON.parse(facturaData.productos); // Parse correctamente la propiedad productos
                 facturaData.productos.forEach(producto => {
                     producto.total = producto.precio * producto.cantidad; // Calcular el total por producto
                 });
@@ -93,95 +92,60 @@ const EditarFactura = () => {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+    event.preventDefault();
 
-        if (JSON.stringify(factura) === JSON.stringify(initialFactura)) {
-            Swal.fire({
-                title: 'Sin cambios',
-                text: 'Por qué presionaste el botón si no has realizado modificaciones? -_-',
-                icon: 'info',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-    
-        // Mostrar alerta de confirmación
-        const result = await Swal.fire({
+        const confirm = await Swal.fire({
             title: '¿Estás seguro?',
             text: '¿Realmente quieres confirmar las modificaciones?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, confirmar',
+            confirmButtonText: 'Sí',
             cancelButtonText: 'Cancelar'
         });
-    
-        if (result.isConfirmed) {
-            try {
-                // Agrupar productos por nombre y sumar cantidades y totales si son iguales
-                const productosAgrupados = factura.productos.reduce((acc, producto) => {
-                    if (acc[producto.nombre]) {
-                        acc[producto.nombre].cantidad += parseFloat(producto.cantidad);
-                        acc[producto.nombre].total += producto.precio * producto.cantidad;
-                    } else {
-                        acc[producto.nombre] = {
-                            ...producto,
-                            cantidad: parseFloat(producto.cantidad),
-                            total: producto.precio * producto.cantidad
-                        };
-                    }
-                    return acc;
-                }, {});
-        
-                // Convertir el objeto agrupado de nuevo a un array y ajustar los tipos de datos
-                const productosFormateados = Object.values(productosAgrupados).map(producto => ({
-                    ...producto,
-                    precio: producto.precio.toString(),
-                    cantidad: producto.cantidad.toString(),
-                    total: producto.total.toString()
-                }));
-        
-                // Convertir los productos formateados a JSON sin las barras invertidas
-                const productosJson = JSON.stringify(productosFormateados);
-        
-                // Calcular subtotal, IVA y total
-                const subtotal = calcularSubtotal();
-                const iva = calcularIva(subtotal);
-                const total = calcularTotal(subtotal, iva);
-    
-                // Crear el objeto de factura actualizada para enviar al servidor
-                const updatedFactura = { 
-                    ...factura, 
-                    productos: productosJson,
-                    fecha_orden: formatDateForMySQL(factura.fecha_orden),
-                    fechaDespacho: formatDateForMySQL(factura.fechaDespacho),
-                    subtotal: subtotal,
-                    iva: iva,
-                    total: total
-                };
-        
-                // Actualizar la factura en la base de datos
-                await axios.put(`http://localhost:3001/api/factura/${id}`, updatedFactura);
-        
-                // Cambiar el estado de la factura a "rectificada"
-                const updatedFacturaWithEstado = { ...updatedFactura, estado_factura: 'rectificada' };
-                await axios.put(`http://localhost:3001/api/factura/${id}`, updatedFacturaWithEstado);
-        
-                // Mostrar alerta de éxito
-                await Swal.fire({
-                    title: 'Éxito',
-                    text: 'La factura ha sido actualizada correctamente.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-    
-                navigate('/home');
-            } catch (error) {
-                console.error('Error al actualizar la factura:', error.message, error.response?.data);
-            }
+
+        if (!confirm.isConfirmed) return;
+
+        try {
+            // Calcular valores actualizados
+            const subtotal = calcularSubtotal();
+            const iva = calcularIva(subtotal);
+            const total = calcularTotal(subtotal, iva);
+
+            // Construir objeto factura sin productos
+            const facturaCabecera = {
+                ...factura,
+                subtotal,
+                iva,
+                total,
+                fecha_orden: formatDateForMySQL(factura.fecha_orden),
+                fechaDespacho: formatDateForMySQL(factura.fechaDespacho),
+                estado_factura: 'rectificada'
+            };
+            delete facturaCabecera.productos; // ❗ eliminar productos de la cabecera
+
+            // 1. Actualizar cabecera
+            await axios.put(`http://localhost:3001/api/factura/${id}`, facturaCabecera);
+
+            // 2. Actualizar productos (podrías usar otra ruta específica si quieres)
+            await axios.put(`http://localhost:3001/api/factura/${id}/detalle`, { productos: factura.productos });
+
+            await Swal.fire({
+                title: '¡Factura rectificada!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+
+            navigate('/home');
+        } catch (error) {
+            console.error('Error al actualizar la factura:', error.message);
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo actualizar la factura',
+                icon: 'error'
+            });
         }
     };
+
 
     const handleCancel = () => {
         navigate(-1);

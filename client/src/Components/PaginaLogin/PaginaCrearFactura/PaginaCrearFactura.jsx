@@ -285,7 +285,6 @@ const PaginaCrearFactura = () => {
     
             // Construir los datos de la factura, incluyendo la lista de productos
             const facturaData = {
-                numero_orden: numFactura,
                 fecha_orden: fechaOrden,
                 rut_proveedor: RUT,
                 razon_social_proveedor: RAZON_SOCIAL,
