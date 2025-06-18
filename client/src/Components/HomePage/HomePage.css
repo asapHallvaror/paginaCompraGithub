@@ -25,3 +25,20 @@
 .bottom-container h2{
     text-align: center;
 }
+
+.filtro-container button {
+  margin: 5px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #f4f4f4;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.filtro-container button.activo {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+

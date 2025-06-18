@@ -154,22 +154,62 @@ app.post('/api/facturas', async (req, res) => {
 });
 
 
-app.put('/api/factura/:id', (req, res) => {
-    const numero_orden = req.params.id;
-    const updatedFactura = { ...req.body, estado_factura: 'rectificada' };
+app.put('/api/factura/:id', async (req, res) => {
+    const numero_orden = parseInt(req.params.id, 10);
+    if (isNaN(numero_orden)) {
+        console.warn('ID inválido recibido:', req.params.id);
+        return res.status(400).send({ success: false, message: 'ID inválido' });
+    }
 
-    const setClause = Object.keys(updatedFactura).map((key, i) => `${key} = @param${i}`).join(', ');
-    const request = global.sqlPool.request();
-    Object.values(updatedFactura).forEach((val, i) => request.input(`param${i}`, val));
-    request.input('numero_orden', sql.Int, numero_orden);
+    const updatedFactura = { ...req.body };
+    delete updatedFactura.numero_orden; // ⚠️ Previene errores con IDENTITY
 
-    const query = `UPDATE facturas SET ${setClause} WHERE numero_orden = @numero_orden`;
-    request.query(query, (err, result) => {
-        if (err) return res.status(500).send({ error: 'Database query error', message: err.message });
-        if (result.rowsAffected[0] > 0) res.send({ success: true, message: 'Factura actualizada con éxito' });
-        else res.status(404).send({ error: 'Factura no encontrada' });
-    });
+    try {
+        const campos = Object.keys(updatedFactura);
+        if (campos.length === 0) {
+            return res.status(400).send({ success: false, message: 'No se proporcionaron campos para actualizar' });
+        }
+
+        const setClause = campos.map((key, i) => `${key} = @param${i}`).join(', ');
+        const request = global.sqlPool.request();
+
+        Object.values(updatedFactura).forEach((val, i) => request.input(`param${i}`, val));
+        request.input('numero_orden', sql.Int, numero_orden);
+
+        const updateQuery = `UPDATE facturas SET ${setClause} WHERE numero_orden = @numero_orden`;
+        const result = await request.query(updateQuery);
+
+        if (result.rowsAffected[0] === 0) {
+            // Verificamos si la factura existe
+            const check = await global.sqlPool.request()
+                .input('numero_orden', sql.Int, numero_orden)
+                .query('SELECT 1 FROM facturas WHERE numero_orden = @numero_orden');
+
+            if (check.recordset.length === 0) {
+                console.warn(`⚠️ Factura ${numero_orden} no existe (verificación extra)`);
+                return res.status(404).send({ success: false, message: 'Factura no encontrada' });
+            }
+
+            // Si existe pero no se actualizó (valores iguales o SET NOCOUNT ON)
+            console.log(`ℹ️ Factura ${numero_orden} no cambió (o trigger oculta row count), pero se procesó correctamente`);
+        }
+
+
+        console.log(`Factura ${numero_orden} actualizada correctamente`);
+
+        // Nota: el trigger se encargará de insertar en historial_facturas si se modificó estado_factura
+        // Aquí solo informamos en consola por transparencia:
+        if (updatedFactura.estado_factura?.toLowerCase() === 'rectificada') {
+            console.log(`Trigger debería registrar el historial de la factura ${numero_orden} como 'rectificada'`);
+        }
+
+        res.send({ success: true, message: 'Factura actualizada correctamente' });
+    } catch (err) {
+        console.error('❌ Error al actualizar la factura:', err.message);
+        res.status(500).send({ success: false, message: 'Error al actualizar la factura', error: err.message });
+    }
 });
+
 
 
 app.put('/api/factura/:id/detalle', async (req, res) => {
@@ -220,6 +260,89 @@ app.put('/api/factura/anulacion/:id', async (req, res) => {
 });
 
 
+app.get('/api/factura/historial/:id', async (req, res) => {
+    const numero_orden = parseInt(req.params.id, 10);
+
+    try {
+        const result = await global.sqlPool.request()
+            .input('numero_orden', sql.Int, numero_orden)
+            .query(`
+                SELECT 
+                    estado_nuevo,
+                    motivo_rechazo,
+                    direccion_entrega,
+                    rut_receptor,
+                    foto_evidencia,
+                    fecha_cambio
+                FROM historial_facturas
+                WHERE numero_orden = @numero_orden
+                ORDER BY fecha_cambio DESC
+            `);
+
+        res.send(result.recordset);
+    } catch (err) {
+        console.error('❌ Error al obtener historial de cambios:', err.message);
+        res.status(500).send({ success: false, message: 'Error al consultar historial', error: err.message });
+    }
+});
+
+
+app.put('/api/factura/estado/:id', upload.single('foto_evidencia'), async (req, res) => {
+    const numero_orden = parseInt(req.params.id, 10);
+
+    if (isNaN(numero_orden)) {
+        return res.status(400).send({ success: false, message: 'ID inválido' });
+    }
+
+    const {
+        estado_entrega,
+        motivo_rechazo,
+        direccion_entrega,
+        rut_receptor
+    } = req.body;
+
+    const foto_evidencia = req.file ? req.file.filename : null;
+
+    try {
+        const request = global.sqlPool.request()
+            .input('numero_orden', sql.Int, numero_orden)
+            .input('estado_entrega', sql.VarChar, estado_entrega)
+            .input('motivo_rechazo', sql.Text, motivo_rechazo || null)
+            .input('direccion_entrega', sql.VarChar, direccion_entrega || null)
+            .input('rut_receptor', sql.VarChar, rut_receptor || null)
+            .input('foto_evidencia', sql.VarChar, foto_evidencia || null);
+
+        const updateQuery = `
+            UPDATE facturas
+            SET estado_entrega = @estado_entrega,
+                motivo_rechazo = @motivo_rechazo,
+                direccion_entrega = @direccion_entrega,
+                rut_receptor = @rut_receptor,
+                foto_evidencia = @foto_evidencia
+            WHERE numero_orden = @numero_orden
+        `;
+
+        const result = await request.query(updateQuery);
+
+        if (result.rowsAffected[0] === 0) {
+            const check = await global.sqlPool.request()
+                .input('numero_orden', sql.Int, numero_orden)
+                .query('SELECT 1 FROM facturas WHERE numero_orden = @numero_orden');
+
+            if (check.recordset.length === 0) {
+                return res.status(404).send({ success: false, message: 'Factura no encontrada' });
+            }
+
+            console.log(`Factura ${numero_orden} no modificada (valores iguales o trigger con SET NOCOUNT ON)`);
+        }
+
+        console.log(`Estado de entrega actualizado para factura ${numero_orden}`);
+        res.send({ success: true, message: 'Estado de entrega actualizado correctamente' });
+    } catch (err) {
+        console.error('Error al actualizar estado de entrega:', err.message);
+        res.status(500).send({ success: false, message: 'Error interno al actualizar', error: err.message });
+    }
+});
 
 
 app.listen(3001, () => {

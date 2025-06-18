@@ -87,18 +87,20 @@ const HomePage = () => {
                     <h2>Tus facturas</h2>
                     <div className="filtro-container">
                         <p style={{ marginTop: '12px', marginRight: '20px' }}>Filtrar por estado de factura:</p>
-                        <button onClick={() => filtrarFacturas('todas', 'factura')}>Todas ({facturas.length})</button>
-                        <button onClick={() => filtrarFacturas('creada', 'factura')}>Creadas ({contarFacturasPorEstado('creada')})</button>
-                        <button onClick={() => filtrarFacturas('rectificada', 'factura')}>Rectificadas ({contarFacturasPorEstado('rectificada')})</button>
-                        <button onClick={() => filtrarFacturas('anulada', 'factura')}>Anuladas ({contarFacturasPorEstado('anulada')})</button>
+                        <button className={filtroFactura === 'todas' ? 'activo' : ''} onClick={() => filtrarFacturas('todas', 'factura')}>Todas ({facturas.length})</button>
+                        <button className={filtroFactura === 'creada' ? 'activo' : ''} onClick={() => filtrarFacturas('creada', 'factura')}>Creadas ({contarFacturasPorEstado('creada')})</button>
+                        <button className={filtroFactura === 'rectificada' ? 'activo' : ''} onClick={() => filtrarFacturas('rectificada', 'factura')}>Rectificadas ({contarFacturasPorEstado('rectificada')})</button>
+                        <button className={filtroFactura === 'anulada' ? 'activo' : ''} onClick={() => filtrarFacturas('anulada', 'factura')}>Anuladas ({contarFacturasPorEstado('anulada')})</button>
                     </div>
+
                     <div className="filtro-container">
                         <p style={{ marginTop: '12px', marginRight: '20px' }}>Filtrar por estado de entrega:</p>
-                        <button onClick={() => filtrarFacturas('todas', 'entrega')}>Todas ({facturas.length})</button>
-                        <button onClick={() => filtrarFacturas('por entregar', 'entrega')}>Por Entregar ({contarFacturasPorEstadoEntrega('por entregar')})</button>
-                        <button onClick={() => filtrarFacturas('rechazada', 'entrega')}>Rechazadas ({contarFacturasPorEstadoEntrega('rechazada')})</button>
-                        <button onClick={() => filtrarFacturas('entregada', 'entrega')}>Entregadas ({contarFacturasPorEstadoEntrega('entregada')})</button>
+                        <button className={filtroEntrega === 'todas' ? 'activo' : ''} onClick={() => filtrarFacturas('todas', 'entrega')}>Todas ({facturas.length})</button>
+                        <button className={filtroEntrega === 'por entregar' ? 'activo' : ''} onClick={() => filtrarFacturas('por entregar', 'entrega')}>Por Entregar ({contarFacturasPorEstadoEntrega('por entregar')})</button>
+                        <button className={filtroEntrega === 'rechazada' ? 'activo' : ''} onClick={() => filtrarFacturas('rechazada', 'entrega')}>Rechazadas ({contarFacturasPorEstadoEntrega('rechazada')})</button>
+                        <button className={filtroEntrega === 'entregada' ? 'activo' : ''} onClick={() => filtrarFacturas('entregada', 'entrega')}>Entregadas ({contarFacturasPorEstadoEntrega('entregada')})</button>
                     </div>
+
                     {facturasFiltradas.length === 0 ? (
                         <p style={{ fontSize: '20px', textAlign: 'center' }}>No hay facturas para mostrar con el estado que escogiste</p>
                     ) : (

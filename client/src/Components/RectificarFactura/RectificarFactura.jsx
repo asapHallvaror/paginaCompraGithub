@@ -121,12 +121,11 @@ const EditarFactura = () => {
                 fechaDespacho: formatDateForMySQL(factura.fechaDespacho),
                 estado_factura: 'rectificada'
             };
-            delete facturaCabecera.productos; // ❗ eliminar productos de la cabecera
+            delete facturaCabecera.productos;
+            delete facturaCabecera.numero_orden;
 
-            // 1. Actualizar cabecera
             await axios.put(`http://localhost:3001/api/factura/${id}`, facturaCabecera);
 
-            // 2. Actualizar productos (podrías usar otra ruta específica si quieres)
             await axios.put(`http://localhost:3001/api/factura/${id}/detalle`, { productos: factura.productos });
 
             await Swal.fire({
