@@ -17,7 +17,6 @@
 <h2>🧰 Requisitos Previos</h2>
 <ul>
   <li>✅ Node.js: <a href="https://nodejs.org/">https://nodejs.org/</a></li>
-  <li>✅ SQL Server 2019 o superior</li>
   <li>✅ SQL Server Management Studio 18 (SSMS): <a href="https://learn.microsoft.com/es-es/sql/ssms/download-sql-server-management-studio-ssms">Descargar aquí</a></li>
   <li>✅ Git (opcional, si deseas clonar el repositorio)</li>
 </ul>
@@ -27,7 +26,7 @@
 <h2>🛠️ Instalación del Proyecto</h2>
 
 <h3>1. Descargar o clonar el repositorio</h3>
-<pre><code>git clone https://github.com/tu-usuario/yzymusic.git</code></pre>
+<pre><code>https://github.com/TU-USUARIO/paginaCompraGithub.git</code></pre>
 <p>O descarga el archivo ZIP desde GitHub y descomprímelo.</p>
 
 <h3>2. Instalación de dependencias</h3>
