@@ -11,6 +11,30 @@ const EditarFactura = () => {
     const [factura, setFactura] = useState(null);
     const [initialFactura, setInitialFactura] = useState(null);
 
+    const regionesYComunas = {
+        "Región de Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
+        "Región de Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"],
+        "Región de Antofagasta": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"],
+        "Región de Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"],
+        "Región de Coquimbo": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"],
+        "Región de Valparaíso": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Puchuncaví", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Rinconada", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Panquehue", "Putaendo", "Santa María", "Quilpué", "Limache", "Olmué", "Villa Alemana"],
+        "Región del Libertador General Bernardo O'Higgins": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"],
+        "Región del Maule": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"],
+        "Región de Ñuble": ["Chillán", "Bulnes", "Cobquecura", "Coelemu", "Coihueco", "El Carmen", "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay"],
+        "Región del Biobío": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"],
+        "Región de La Araucanía": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre Las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"],
+        "Región de Los Ríos": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"],
+        "Región de Los Lagos": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"],
+        "Región de Aysén del General Carlos Ibáñez del Campo": ["Coyhaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"],
+        "Región de Magallanes y de la Antártica Chilena": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"],
+        "Región Metropolitana de Santiago": ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Santiago", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+      };
+
+    const [regionSeleccionada, setRegionSeleccionada] = useState('');
+    const [comunasDisponibles, setComunasDisponibles] = useState([]);
+
+
+
 
     useEffect(() => {
         const fetchFactura = async () => {
@@ -18,10 +42,12 @@ const EditarFactura = () => {
                 const response = await axios.get(`http://localhost:3001/api/factura/${id}`);
                 const facturaData = response.data;
                 facturaData.productos.forEach(producto => {
-                    producto.total = producto.precio * producto.cantidad; // Calcular el total por producto
+                    producto.total = producto.precio * producto.cantidad; 
                 });
                 setFactura(facturaData);
-                setInitialFactura(facturaData); // Guardar estado inicial
+                setInitialFactura(facturaData); 
+                setRegionSeleccionada(facturaData.regionDespacho || '');
+                setComunasDisponibles(regionesYComunas[facturaData.regionDespacho] || []);
 
             } catch (error) {
                 console.error('Error al obtener los detalles de la factura:', error.message, error.response?.data);
@@ -61,6 +87,19 @@ const EditarFactura = () => {
             });
         }
     };
+
+    const handleRegionChange = (e) => {
+    const region = e.target.value;
+    setRegionSeleccionada(region);
+    setComunasDisponibles(regionesYComunas[region] || []);
+    setFactura(prev => ({ ...prev, regionDespacho: region, comunaDespacho: '' }));
+    };
+
+    const handleComunaChange = (e) => {
+    const comuna = e.target.value;
+    setFactura(prev => ({ ...prev, comunaDespacho: comuna }));
+    };
+
 
     const formatDateForMySQL = (dateString) => {
         const date = new Date(dateString);
@@ -258,18 +297,34 @@ const EditarFactura = () => {
                 <h2 className='h1corte'>Datos de despacho</h2>
                 <table className="factura-table">
                     <tbody>
-                        <tr>
-                            <td><label>Región:</label></td>
-                            <td><input type="text" name="regionDespacho" value={factura.regionDespacho} onChange={handleInputChange} /></td>
-                            <td><label>Comuna:</label></td>
-                            <td><input type="text" name="comunaDespacho" value={factura.comunaDespacho} onChange={handleInputChange} /></td>
-                            <td><label>Dirección</label></td>
-                            <td><input type="text" name="direccionDespacho" value={factura.direccionDespacho} onChange={handleInputChange} /></td>
-                        </tr>
-                        <tr>
-                            <td><label>Fecha estimada de entrega:</label></td>
-                            <td><input type="date" name="fechaDespacho" value={formatDate(factura.fechaDespacho)} onChange={handleInputChange} /></td>
-                        </tr>
+                    <tr>
+                        <td><label>Región:</label></td>
+                        <td>
+                        <select value={regionSeleccionada} onChange={handleRegionChange} required>
+                            <option value="">Seleccione región</option>
+                            {Object.keys(regionesYComunas).map((region, index) => (
+                            <option key={index} value={region}>{region}</option>
+                            ))}
+                        </select>
+                        </td>
+
+                        <td><label>Comuna:</label></td>
+                        <td>
+                        <select value={factura.comunaDespacho || ''} onChange={handleComunaChange} required>
+                            <option value="">Seleccione comuna</option>
+                            {comunasDisponibles.map((comuna, index) => (
+                            <option key={index} value={comuna}>{comuna}</option>
+                            ))}
+                        </select>
+                        </td>
+
+                        <td><label>Dirección</label></td>
+                        <td><input type="text" name="direccionDespacho" value={factura.direccionDespacho} onChange={handleInputChange} required /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Fecha estimada de entrega:</label></td>
+                        <td><input type="date" name="fechaDespacho" value={formatDate(factura.fechaDespacho)} onChange={handleInputChange} required /></td>
+                    </tr>
                     </tbody>
                 </table>
 

@@ -50,7 +50,7 @@ const PaginaCrearFactura = () => {
     const [telefono, setTelefono] = useState("");
     const [correo, setCorreo] = useState("");
     
-    const [numFactura, setNumFactura] = useState(null); // Inicializar con null o un valor que indique carga inicial
+    const [numFactura, setNumFactura] = useState(null);
     const [fechaOrden, setFechaOrden] = useState('');
     const [fechaDespacho, setFechaDespacho] = useState('');
 
@@ -67,7 +67,7 @@ const PaginaCrearFactura = () => {
     const [direccionDespacho, setDireccionDespacho] = useState('');
     const [usarDireccionCliente, setUsarDireccionCliente] = useState(false);
 
-    //Manejador de errores de las regiones y comunas
+
     const [errorRegion, setErrorRegion] = useState('');
     const [errorComuna, setErrorComuna] = useState('');
 

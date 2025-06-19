@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './HomePage.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
+import Swal from 'sweetalert2';
+
 
 const HomePage = () => {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -61,6 +63,51 @@ const HomePage = () => {
         return filtroFacturaPass && filtroEntregaPass;
     });
 
+    const eliminarFactura = async (numero_orden) => {
+    const confirm = await Swal.fire({
+        title: `¿Eliminar Factura N°${numero_orden}?`,
+        text: 'Esta acción marcará la factura como eliminada',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+        const response = await fetch(`http://localhost:3001/api/factura/eliminar/${numero_orden}`, {
+        method: 'DELETE'
+        });
+
+        const result = await response.json();
+        if (result.success) {
+        await Swal.fire({
+            title: 'Eliminada',
+            text: 'La factura fue eliminada correctamente',
+            icon: 'success'
+        });
+        setFacturas(prev => prev.filter(f => f.numero_orden !== numero_orden));
+        } else {
+        await Swal.fire({
+            title: 'Error',
+            text: result.message || 'No se pudo eliminar la factura',
+            icon: 'error'
+        });
+        }
+    } catch (err) {
+        console.error('Error eliminando factura:', err.message);
+        await Swal.fire({
+        title: 'Error',
+        text: 'Ocurrió un error inesperado',
+        icon: 'error'
+        });
+    }
+    };
+
+
     return (
         <div>
             <div className="home-container">
@@ -114,6 +161,7 @@ const HomePage = () => {
                                     <th>Estado despacho</th>
                                     <th>Cambiar estado de despacho</th>
                                     <th>Ver historial de cambios</th>
+                                    <th>Eliminar factura</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -192,6 +240,20 @@ const HomePage = () => {
                                                     <button style={{ marginLeft: '50px' }}>Ver historial</button>
                                                 </Link>
                                             </td>
+                                            <td>
+                                                {factura.estado_factura === 'creada' ? (
+                                                    <button
+                                                    className="btn-eliminar"
+                                                    onClick={() => eliminarFactura(factura.numero_orden)}
+                                                    >
+                                                    Eliminar
+                                                    </button>
+                                                ) : (
+                                                    <p style={{ fontSize: '14px' }}>No disponible</p>
+                                                )}
+                                            </td>
+
+                                            
                                         </tr>
                                     );
                                 })}

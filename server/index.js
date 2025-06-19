@@ -58,7 +58,7 @@ app.get("/facturas", (req, res) => {
     const rut_proveedor = req.query.rut_proveedor;
     global.sqlPool.request()
         .input('rut_proveedor', sql.VarChar, rut_proveedor)
-        .query('SELECT * FROM facturas WHERE rut_proveedor = @rut_proveedor', (err, result) => {
+        .query('SELECT * FROM facturas WHERE rut_proveedor = @rut_proveedor AND eliminada = 0' , (err, result) => {
             if (err) return res.status(500).send({ error: 'Database query error', message: err.message });
             res.send(result.recordset);
         });
@@ -110,28 +110,35 @@ app.post('/api/login', (req, res) => {
 app.post('/api/facturas', async (req, res) => {
     const facturaData = req.body;
 
-    // Extraer y remover los productos del objeto
     const productos = JSON.parse(facturaData.productos);
     delete facturaData.productos;
 
     try {
         const request = global.sqlPool.request();
 
-        // Agregar los inputs para la tabla facturas
+        // Agregar inputs
         Object.entries(facturaData).forEach(([key, value]) => {
             request.input(key, value);
         });
 
-        // Preparar la lista de columnas y parámetros
         const keys = Object.keys(facturaData).join(', ');
         const params = Object.keys(facturaData).map(k => `@${k}`).join(', ');
 
-        // Insertar factura
-        const insertFacturaQuery = `INSERT INTO facturas (${keys}) OUTPUT INSERTED.numero_orden VALUES (${params})`;
-        const result = await request.query(insertFacturaQuery);
+        // Crea la tabla temporal para capturar el numero_orden
+        const outputQuery = `
+            DECLARE @ordenTable TABLE (numero_orden INT);
+
+            INSERT INTO facturas (${keys})
+            OUTPUT INSERTED.numero_orden INTO @ordenTable(numero_orden)
+            VALUES (${params});
+
+            SELECT numero_orden FROM @ordenTable;
+        `;
+
+        const result = await request.query(outputQuery);
         const numeroOrdenGenerado = result.recordset[0].numero_orden;
 
-        // Insertar detalle_factura para cada producto
+        // Insertar productos
         for (const producto of productos) {
             const { nombre, precio, cantidad, total } = producto;
 
@@ -141,17 +148,24 @@ app.post('/api/facturas', async (req, res) => {
                 .input('precio_unitario', sql.Int, precio)
                 .input('cantidad', sql.Int, cantidad)
                 .input('total', sql.Int, total)
-                .query(`INSERT INTO detalle_factura (numero_orden, nombre_producto, precio_unitario, cantidad, total)
-                        VALUES (@numero_orden, @nombre_producto, @precio_unitario, @cantidad, @total)`);
+                .query(`
+                    INSERT INTO detalle_factura (numero_orden, nombre_producto, precio_unitario, cantidad, total)
+                    VALUES (@numero_orden, @nombre_producto, @precio_unitario, @cantidad, @total)
+                `);
         }
 
         res.send({ success: true, numero_orden: numeroOrdenGenerado });
 
     } catch (err) {
         console.error('Error al insertar factura y detalles:', err.message);
-        res.status(500).send({ success: false, message: 'Error al guardar la factura', error: err.message });
+        res.status(500).send({
+            success: false,
+            message: 'Error al guardar la factura',
+            error: err.message
+        });
     }
 });
+
 
 
 app.put('/api/factura/:id', async (req, res) => {
@@ -162,7 +176,7 @@ app.put('/api/factura/:id', async (req, res) => {
     }
 
     const updatedFactura = { ...req.body };
-    delete updatedFactura.numero_orden; // ⚠️ Previene errores con IDENTITY
+    delete updatedFactura.numero_orden; 
 
     try {
         const campos = Object.keys(updatedFactura);
@@ -190,15 +204,13 @@ app.put('/api/factura/:id', async (req, res) => {
                 return res.status(404).send({ success: false, message: 'Factura no encontrada' });
             }
 
-            // Si existe pero no se actualizó (valores iguales o SET NOCOUNT ON)
             console.log(`ℹ️ Factura ${numero_orden} no cambió (o trigger oculta row count), pero se procesó correctamente`);
         }
 
 
         console.log(`Factura ${numero_orden} actualizada correctamente`);
 
-        // Nota: el trigger se encargará de insertar en historial_facturas si se modificó estado_factura
-        // Aquí solo informamos en consola por transparencia:
+
         if (updatedFactura.estado_factura?.toLowerCase() === 'rectificada') {
             console.log(`Trigger debería registrar el historial de la factura ${numero_orden} como 'rectificada'`);
         }
@@ -343,6 +355,26 @@ app.put('/api/factura/estado/:id', upload.single('foto_evidencia'), async (req, 
         res.status(500).send({ success: false, message: 'Error interno al actualizar', error: err.message });
     }
 });
+
+app.delete('/api/factura/eliminar/:id', async (req, res) => {
+  const numero_orden = parseInt(req.params.id, 10);
+  try {
+    const result = await global.sqlPool.request()
+      .input('numero_orden', sql.Int, numero_orden)
+      .query('DELETE FROM facturas WHERE numero_orden = @numero_orden');
+
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).send({ success: false, message: 'Factura no encontrada o no se pudo eliminar' });
+    }
+
+    res.send({ success: true, message: 'Factura eliminada (lógica)' });
+  } catch (err) {
+    console.error('❌ Error al intentar eliminar factura:', err.message);
+    res.status(500).send({ success: false, message: 'Error interno', error: err.message });
+  }
+});
+
+
 
 
 app.listen(3001, () => {
