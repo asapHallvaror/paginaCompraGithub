@@ -12,30 +12,102 @@
   <h2>La factura final debería asemejarse a la siguiente:</h2>
   <img src="https://github.com/asapHallvaror/paginaCompraGithub/assets/128053015/a53f6baf-9e63-40ad-8295-96946b53fda8" />
   
-  <h1>Instalación</h1>
-  <p>1. Descargar o clonar el repositorio.</p>
-  <p>2. Descomprimirlo y abrir la carpeta.</p>
-  <p>3. Se necesita tener descargado 'Node Js', en caso de no tenerlo, descargarlo de la página</p>
-  <p>4. Ingresar a la carpeta client, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
-  <p>5. Ingresar a la carpeta server, abrir terminal/cdm en ella y ejecutar 'npm install'</p>
-  <h3>Ahora hay que hacer la base de datos :O</h3>
-  <p>6. Abrir el archivo contenido en la carpeta server llamado 'yzymusicMYSQL.sql'</p>
-  <p>7. Copiar todo el contenido</p>
-  <p>8. Abrir LARAGON (si no lo tiene instalado, busque 'Laragon' en su navegador, descargue el instalador de la versión full (la de 173mb) e instale el programa)</p>
-  <p>9. Presionar el botón "Iniciar todo"</p>
-  <p>10. Presionar el botón "Base de Datos"</p>
-  <p>11. Presionar botón "Abrir"</p>
-  <p>12. Ahora, debe dirigirse a donde dice "Laragon.MySQL", darle click derecho, dirigirse a "Crear nuevo" y clickear en "Base de datos"</p>
-  <p>13. En el campo "Nombre", debe ingresar "yzymusic"</p>
-  <p>14. Clickear boton "Aceptar"</p>
-  <p>15. Debe hacer click a su base de datos recién creada y dirigirse a la pestaña "Consulta"</p>
-  <p>16. Pegue todo el código que copió del archivo 'yzymusicMYSQL.sql'</p>
-  <p>17. Presione f9</p>
-  <h3>Instrucciones para levantar la página</h3>
-  <p>1. Dirijase a la carpeta server de la carpeta del repositorio y abra una terminal</p>
-  <p>2. Ejecute el comando "node index.js" y deje la terminal abierta</p>
-  <p>3. Ahora dirijase a la carpeta client de la carpeta del repositorio y abra una terminal</p>
-  <p>4. Ejecute el comando "npm" start y listo!! La página se debería abrir automáticamente en unos segundos.</p>
+<h1>📦 Sistema de Gestión de Facturas</h1>
+
+<h2>🧰 Requisitos Previos</h2>
+<ul>
+  <li>✅ Node.js: <a href="https://nodejs.org/">https://nodejs.org/</a></li>
+  <li>✅ SQL Server Management Studio 18 (SSMS): <a href="https://learn.microsoft.com/es-es/sql/ssms/download-sql-server-management-studio-ssms">Descargar aquí</a></li>
+  <li>✅ Git (opcional, si deseas clonar el repositorio)</li>
+</ul>
+
+<hr />
+
+<h2>🛠️ Instalación del Proyecto</h2>
+
+<h3>1. Descargar o clonar el repositorio</h3>
+<pre><code>https://github.com/TU-USUARIO/paginaCompraGithub.git</code></pre>
+<p>O descarga el archivo ZIP desde GitHub y descomprímelo.</p>
+
+<h3>2. Instalación de dependencias</h3>
+<p>Ejecuta los siguientes comandos desde una terminal:</p>
+
+<h4>📁 Client</h4>
+<pre><code>cd client
+npm install</code></pre>
+
+<h4>📁 Server</h4>
+<pre><code>cd ../server
+npm install</code></pre>
+
+<h3>3. Configurar la conexión a la base de datos</h3>
+<p>Abre el archivo <code>server/index.js</code> y modifica este bloque con los datos de tu instalación de SQL Server:</p>
+
+<pre><code>const config = {
+  user: 'sa',
+  password: 'TU_CONTRASEÑA',
+  server: 'localhost', // Puede ser 'localhost', '.', o 'localhost\\SQLEXPRESS'
+  database: 'yzymusic',
+  options: {
+    encrypt: false,
+    trustServerCertificate: true,
+  },
+  port: 1433
+};
+</code></pre>
+
+<hr />
+
+<h2>🧩 Crear Base de Datos en SSMS</h2>
+<ol>
+  <li>Abre <strong>SQL Server Management Studio 18</strong>.</li>
+  <li>Conéctate a tu instancia local.</li>
+  <li>Abre el archivo SQL llamado "yzymusic.sql" y ejecutalo</li>
+  <li>Haz click derecho en la base de datos creada -> New query</li>
+  <li>Abrir el archivo "CONSULTASYZYMUSIC", copiar y pegar su contenido en la zona de consulta y ejecutar paso a paso los triggers, funciones y procedimientos</li>
+
+</ol>
+
+<hr />
+
+<h2>🚀 Levantar el Proyecto</h2>
+<ol>
+  <li>Abre una terminal en la carpeta <code>server</code> y ejecuta:</li>
+</ol>
+<pre><code>node index.js</code></pre>
+
+<ol start="2">
+  <li>Abre otra terminal en la carpeta <code>client</code> y ejecuta:</li>
+</ol>
+<pre><code>npm start</code></pre>
+
+<p>La aplicación se abrirá automáticamente en <a href="http://localhost:3000" target="_blank">http://localhost:3000</a>.</p>
+
+<hr />
+
+<h2>🧪 Acceso de prueba</h2>
+<p>Puedes usar uno de los usuarios ya insertados mediante el script SQL. Si necesitas nuevos usuarios, insértalos directamente en la tabla <code>usuario</code>.</p>
+
+<hr />
+
+<h2>📌 Consideraciones</h2>
+<ul>
+  <li>Ya se incluyen todos los <strong>triggers</strong>, <strong>funciones</strong> y <strong>procedimientos almacenados</strong> requeridos.</li>
+  <li>El sistema implementa:</li>
+  <ul>
+    <li>Creación, rectificación y anulación de facturas</li>
+    <li>Registro automático de historial de cambios</li>
+    <li>Eliminación lógica de facturas</li>
+    <li>Logs internos mediante triggers</li>
+  </ul>
+  <li>Asegúrate de que el puerto <code>1433</code> esté abierto en tu firewall si usas SQL Server.</li>
+</ul>
+
+<hr />
+
+<h2>🤝 Autores</h2>
+<p>Este proyecto fue desarrollado como por Vicente Zapata y Álvaro Morales.</p>
+
   
   
   <h1>Contexto</h1>
