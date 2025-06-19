@@ -62,12 +62,10 @@ npm install</code></pre>
 <ol>
   <li>Abre <strong>SQL Server Management Studio 18</strong>.</li>
   <li>Conéctate a tu instancia local.</li>
-  <li>Crea una nueva base de datos llamada <code>yzymusic</code>.</li>
-  <li>Abre el archivo <code>yzymusicMYSQL.sql</code> en la carpeta <code>server/</code>.</li>
-  <li>Copia todo su contenido.</li>
-  <li>Haz clic derecho sobre la base de datos <code>yzymusic</code> &gt; <strong>Nueva consulta</strong>.</li>
-  <li>Pega el código copiado.</li>
-  <li>Ejecuta la consulta presionando el botón <strong>Ejecutar</strong> o <kbd>F5</kbd>.</li>
+  <li>Abre el archivo SQL llamado "yzymusic.sql" y ejecutalo</li>
+  <li>Haz click derecho en la base de datos creada -> New query</li>
+  <li>Abrir el archivo "CONSULTASYZYMUSIC", copiar y pegar su contenido en la zona de consulta y ejecutar paso a paso los triggers, funciones y procedimientos</li>
+
 </ol>
 
 <hr />
@@ -108,7 +106,7 @@ npm install</code></pre>
 <hr />
 
 <h2>🤝 Autores</h2>
-<p>Este proyecto fue desarrollado como parte del curso de Base de Datos 2024.</p>
+<p>Este proyecto fue desarrollado como por Vicente Zapata y Álvaro Morales.</p>
 
   
   
