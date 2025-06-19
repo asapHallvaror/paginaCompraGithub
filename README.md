@@ -62,6 +62,7 @@ npm install</code></pre>
 <ol>
   <li>Abre <strong>SQL Server Management Studio 18</strong>.</li>
   <li>Conéctate a tu instancia local.</li>
+  <li>Crea una base de datos llamada yzymusic (haciendo click derecho en databases -> new database -> en database name poner "yzymusic" -> presionar OK)</li>
   <li>Abre el archivo SQL llamado "yzymusic.sql" y ejecutalo</li>
   <li>Haz click derecho en la base de datos creada -> New query</li>
   <li>Abrir el archivo "CONSULTASYZYMUSIC", copiar y pegar su contenido en la zona de consulta y ejecutar paso a paso los triggers, funciones y procedimientos</li>
