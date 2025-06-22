@@ -107,7 +107,7 @@ npm install</code></pre>
 <hr />
 
 <h2>🤝 Autores</h2>
-<p>Este proyecto fue desarrollado como por Vicente Zapata y Álvaro Morales.</p>
+<p>Este proyecto fue desarrollado por Vicente Zapata y Álvaro Morales.</p>
 
   
   
